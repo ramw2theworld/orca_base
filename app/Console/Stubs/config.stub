@@ -1,0 +1,6 @@
+<?php
+
+return [
+    // Default configuration values
+    'option' => 'value',
+];

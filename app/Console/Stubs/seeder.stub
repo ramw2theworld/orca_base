@@ -1,0 +1,14 @@
+<?php
+
+namespace Modules\{{moduleName}}\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
+
+class {{className}} extends Seeder
+{
+    public function run()
+    {
+        // Seeder logic here
+    }
+}

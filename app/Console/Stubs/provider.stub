@@ -1,0 +1,18 @@
+<?php
+
+namespace Modules\{{moduleName}}\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class {{className}} extends ServiceProvider
+{
+    public function boot()
+    {
+        // Bootstrap any application services.
+    }
+
+    public function register()
+    {
+        // Register bindings in the container.
+    }
+}

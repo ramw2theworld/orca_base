@@ -1,0 +1,30 @@
+<?php
+
+namespace {{ namespace }};
+
+use Closure;
+use Illuminate\Contracts\Validation\Rule;
+
+class {{ class }} implements Rule
+{
+    /**
+     * Run the validation rule.
+     *
+     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     */
+    public function passes($attribute, $value)
+    {
+        // Implement rule logic here
+        return true;
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function message()
+    {
+        return 'The validation error message.';
+    }
+}
