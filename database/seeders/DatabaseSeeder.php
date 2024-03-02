@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\Permission\Models\Permission;
+use Modules\Role\Database\Seeders\PermissionRoleTableSeeder;
+use Modules\Role\Models\Role;
+use Modules\User\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Role::factory()->count(5)->create();
+        // User::factory()->count(12)->create();
+        // Permission::factory()->count(50)->create();
+        // $this->call(PermissionRoleTableSeeder::class);
     }
 }

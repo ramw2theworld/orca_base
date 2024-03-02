@@ -27,7 +27,7 @@ class MakeModuleFactory extends Command
     {
         $model = $this->argument('model');
         $module = $this->argument('module');
-        $factoryPath = base_path("Modules/{$module}/Database/factories/{$model}Factory.php");
+        $factoryPath = base_path("Modules/{$module}/Database/factories/{$model}.php");
 
         $directory = dirname($factoryPath);
         if (!is_dir($directory)) {

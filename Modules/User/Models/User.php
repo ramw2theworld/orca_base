@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace Modules\User\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Middleware\Authenticate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Modules\Role\Models\Role;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +20,6 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'username',
         'email',
         'password',
         'status',
@@ -33,17 +32,24 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        // Define your hidden attributes here
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        // Define your casts here
     ];
+
+    public function roles() {
+        return $this->belongsToMany(Role::class);
+    }
+
+    protected static function newFactory()
+    {
+        return \Modules\User\Database\Factories\UserFactory::new();
+    }
 }

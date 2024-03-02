@@ -3,11 +3,9 @@
 namespace Modules\{{moduleName}}\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\{{moduleName}}\Models\{{modelName}};
 
-class {{modelName}}Factory extends Factory
+class {{modelName}} extends Factory
 {
-    protected $model = {{modelName}}::class;
 
     public function definition()
     {

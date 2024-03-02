@@ -34,14 +34,14 @@ class MakeModuleMigration extends Command
         // Convert table name to lowercase plural form
         $tableNamePlural = Str::plural(strtolower($tableName));
 
-        $migrationPath = base_path("Modules/{$module}/Database/migrations/{$datePrefix}_{$tableNamePlural}_table.php");
+        $migrationPath = base_path("Modules/{$module}/Database/migrations/{$datePrefix}_create_{$tableNamePlural}_table.php");
 
         // Ensure the migrations directory exists
         if (!is_dir($dirPath = dirname($migrationPath))) {
             mkdir($dirPath, 0777, true);
         }
 
-        $stubPath = app_path('Console/Stubs/alter_table.stub');
+        $stubPath = app_path('Console/Stubs/migration.stub');
         if (!file_exists($stubPath)) {
             $this->error("The stub file does not exist: {$stubPath}");
             return;
