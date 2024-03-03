@@ -12,6 +12,7 @@ class User extends Model
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
@@ -20,10 +21,12 @@ class User extends Model
     protected $fillable = [
         'first_name',
         'last_name',
+        'username',
         'email',
         'password',
         'status',
-
+        'role_id',
+        
     ];
 
     /**
@@ -44,8 +47,8 @@ class User extends Model
         // Define your casts here
     ];
 
-    public function roles() {
-        return $this->belongsToMany(Role::class);
+    public function role() {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
     protected static function newFactory()
