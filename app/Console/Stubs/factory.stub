@@ -1,0 +1,16 @@
+<?php
+
+namespace Modules\{{moduleName}}\Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class {{modelName}} extends Factory
+{
+
+    public function definition()
+    {
+        return [
+            // Define your model's default state.
+        ];
+    }
+}
