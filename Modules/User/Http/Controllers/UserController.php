@@ -100,8 +100,6 @@ class UserController extends Controller
 
         $users = $this->userRepository->all($searchQuery, $perPage, $direction, $sortBy);
         $resource = UserResource::collection($users);
-        // return UserResource::collection($users)->response()->setStatusCode(200)->header('Content-Type', 'application/json');
-
         return $this->sendSuccess($resource, "Users fetched successfully", 200);
     }
 
