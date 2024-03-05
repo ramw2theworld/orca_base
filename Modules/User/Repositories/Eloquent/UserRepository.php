@@ -79,6 +79,7 @@ class UserRepository implements UserInterface
                 'status' => true,
 
             ]);
+            $user->load('role');
 
             DB::commit();
             return $user;
