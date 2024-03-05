@@ -4,8 +4,9 @@
 use Modules\User\Http\Controllers\UserController;
 
  Route::prefix('api/users')->group(function () {
-     Route::get('/', [UserController::class,'index'])->name('user.index');
-     Route::post('/', [UserController::class,'create'])->name('user.create');
-     Route::get('/{username}', [UserController::class,'show'])->name('user.show');
-
+     Route::get('/', [UserController::class,'index'])->name('users.index');
+     Route::post('/', [UserController::class,'create'])->name('users.create');
+     Route::get('/{username}', [UserController::class,'show'])->name('users.show');
+     Route::put('/{username}', [UserController::class,'update'])->name('users.update');
+     Route::delete('/{username}', [UserController::class,'delete'])->name('users.delete');
  });

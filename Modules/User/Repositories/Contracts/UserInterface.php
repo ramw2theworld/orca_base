@@ -9,6 +9,6 @@ interface UserInterface
     public function all(string $search, int $per_page, string $dir, string $sortCol): LengthAwarePaginator;
     public function find(string $username): ?User;
     public function create(array $data): User;
-    public function update($id, array $data);
-    public function delete($id);
+    public function update($id, array $data): ?User;
+    public function delete(string $username): void;
 }

@@ -144,6 +144,14 @@ return [
             */
             'exclude' => [],
 
+            'directories' => [
+                base_path('app'),
+                base_path('Modules/User/Http/Controllers'),
+                base_path('Modules/User/Http/Resources'),
+                base_path('Modules/User/Models'),
+                // ... other directories you want to include
+            ],
+
             /*
              * Allows to generate specs either for OpenAPI 3.0.0 or OpenAPI 3.1.0.
              * By default the spec will be in version 3.0.0

@@ -7,6 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 use Modules\Core\Traits\RespondsWithJson;
+use Illuminate\Validation\Rule;
+
 
 class UserCreateRequest extends FormRequest
 {
@@ -28,13 +30,28 @@ class UserCreateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // Correct rule here
-            'role_id' => 'required|integer',  
-        ];
+        $userId = $this->user ? $this->user->id : null;
+        $rules = [];
+
+        if ($this->isMethod('post')) {
+            $rules += [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+                'role_id' => 'required|integer',
+            ];
+        } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules += [
+                'first_name' => 'sometimes|string|max:255',
+                'last_name' => 'sometimes|string|max:255',
+                'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+                'password' => 'sometimes|required|string|min:8|confirmed',
+                'role_id' => 'sometimes|required|integer',
+            ];
+        }
+
+        return $rules;
     }
 
     /**

@@ -20,13 +20,26 @@ class UserRepository implements UserInterface
 
     public function all(string $search = null, int $per_page, string $dir, string $sortCol): LengthAwarePaginator
     {
-        $query = $this->model::with('role');
+        $query = $this->model::with('role')
+        ->select(
+            'users.id', 
+            'users.first_name', 
+            'users.last_name', 
+            'users.email', 
+            'users.username', 
+            'users.status', 
+            'users.role_id', 
+            'users.created_at'
+        );
+    
+        // Notice the inclusion of 'role_id' above
+        
         if (!empty($search)) {
             $query->where(function ($query) use ($search) {
                 $query->where("first_name", "like", "%{$search}%")
-                      ->orWhere("last_name", "like", "%{$search}%")
-                      ->orWhere("email", "like", "%{$search}%")
-                      ->orWhere("username", "like", "%{$search}%");
+                    ->orWhere("last_name", "like", "%{$search}%")
+                    ->orWhere("email", "like", "%{$search}%")
+                    ->orWhere("username", "like", "%{$search}%");
             })
             ->orWhereHas('role', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
@@ -76,13 +89,37 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data): ?User
     {
-        // Implementation
+        try {
+            $user = $this->model::findOrFail($id);
+            if (!$user) {
+                throw new ModelNotFoundException('User not found');
+            }
+
+            foreach ($data as $key => $value) {
+                if (isset($data[$key])) {
+                    $user->$key = $value;
+                }
+            }
+            $user->save();
+            
+            return $user;
+        } catch (\Exception $ex) {
+            throw new $ex($ex->getMessage());
+        }
     }
 
-    public function delete($id)
+    public function delete(string $username): void
     {
-        // Implementation
+        try {
+            $user = $this->model::where('username', $username)->first();
+            if (!$user) {   
+                throw new ModelNotFoundException('User not found');
+            }
+            $this->model->delete();
+        } catch (Exception $ex) {
+            throw new $ex($ex->getMessage());
+        }
     }
 }
