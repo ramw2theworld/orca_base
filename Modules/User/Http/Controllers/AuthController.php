@@ -3,7 +3,9 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
@@ -41,12 +43,20 @@ class AuthController extends Controller
     */
     public function login(Request $request)
     {
-        $credentials = $request->only("email", "password");
-        if (! $token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        try{
+            $credentials = $request->only("email", "password");
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return $this->sendError('User login failed', ['error' => 'Bad credentials.'], Response::HTTP_UNAUTHORIZED);
+            }
+        
+            return $this->respondWithToken($token);
         }
-    
-        return $this->respondWithToken($token);
+        catch(Exception $exception){
+            return $this->sendError('User login failed', 
+            ['error' => 'An error occurred while generating login: '.$exception->getMessage()], 
+            Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
     }
 
     protected function respondWithToken($token)
