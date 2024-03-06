@@ -3,6 +3,8 @@
 namespace Modules\Permission\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Permission\Repositories\Contracts\PermissionRepositoryInterface;
+use Modules\Permission\Repositories\Eloquent\PermissionRepository;
 
 class PermissionServiceProvider extends ServiceProvider
 {
@@ -15,7 +17,8 @@ class PermissionServiceProvider extends ServiceProvider
 
     public function register()
     {
-        // Register bindings in the container.
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
+
     }
 }
 

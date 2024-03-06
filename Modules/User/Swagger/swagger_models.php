@@ -87,3 +87,43 @@
  *   )
  * )
  */
+
+
+  /**
+ * @OA\Schema(
+ *   schema="Permission",
+ *   type="object",
+ *   @OA\Property(
+ *     property="id",
+ *     type="integer",
+ *     format="int64",
+ *     description="Unique identifier for the Permission"
+ *   ),
+ *   @OA\Property(
+ *     property="name",
+ *     type="string",
+ *     description="Name of the Permission"
+ *   ),
+ *   @OA\Property(
+ *     property="slug",
+ *     type="string",
+ *     description="Slug of the Permission"
+ *   ),
+ *   @OA\Property(
+ *     property="status",
+ *     type="string",
+ *     format="bool",
+ *     description="Status of the Permission"
+ *   ),
+ *   @OA\Property(
+ *     property="created_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="Date of creation of the Permission"
+ *   ),
+ *   @OA\Property(
+ *     property="role",
+ *     ref="#/components/schemas/Permission"
+ *   )
+ * )
+ */
