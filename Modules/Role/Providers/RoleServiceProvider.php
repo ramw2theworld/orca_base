@@ -2,8 +2,9 @@
 
 namespace Modules\Role\Providers;
 
-use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Role\Repositories\Contracts\RoleRepositoryInterface;
+use Modules\Role\Repositories\Eloquent\RoleRepository;
 
 class RoleServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,6 @@ class RoleServiceProvider extends ServiceProvider
 
     public function register()
     {
-        // Register bindings in the container.
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
     }
 }

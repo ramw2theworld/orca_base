@@ -48,3 +48,42 @@
  *   )
  * )
  */
+
+ /**
+ * @OA\Schema(
+ *   schema="Role",
+ *   type="object",
+ *   @OA\Property(
+ *     property="id",
+ *     type="integer",
+ *     format="int64",
+ *     description="Unique identifier for the Role"
+ *   ),
+ *   @OA\Property(
+ *     property="name",
+ *     type="string",
+ *     description="Name of the Role"
+ *   ),
+ *   @OA\Property(
+ *     property="slug",
+ *     type="string",
+ *     description="slug of the Role"
+ *   ),
+ *   @OA\Property(
+ *     property="status",
+ *     type="string",
+ *     format="bool",
+ *     description="Status of the Role"
+ *   ),
+ *   @OA\Property(
+ *     property="created_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="Date of creation of the Role"
+ *   ),
+ *   @OA\Property(
+ *     property="role",
+ *     ref="#/components/schemas/Role"
+ *   )
+ * )
+ */

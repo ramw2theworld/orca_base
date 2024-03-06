@@ -69,4 +69,41 @@ class AuthController extends Controller
             'expires_in' => $token_ttl * 60
         ]], 'Access token generated successfully', 200);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     tags={"Users"},
+     *     summary="Logout a user",
+     *     description="Invalidates the user's JWT token to log them out.",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Logout successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized if token is invalid or not provided",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error if there's a problem logging the user out"
+     *     )
+     * )
+     */
+    protected function logout(Request $request): JsonResponse
+    {
+        try{
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return $this->sendSuccess([], 'Logout successfully', 200);
+        }
+        catch(Exception $exception){
+            return $this->sendError('User login failed', 
+            ['error' => 'An error occurred while generating login: '.$exception->getMessage()], 
+            Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
