@@ -4,6 +4,7 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -41,7 +42,7 @@ class AuthController extends Controller
     *   ),
     * )
     */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         try{
             $credentials = $request->only("email", "password");
@@ -59,10 +60,10 @@ class AuthController extends Controller
         
     }
 
-    protected function respondWithToken($token)
+    protected function respondWithToken($token): JsonResponse
     {
         $token_ttl = auth('api')->factory()->getTTL();
-        return $this->sendSuccess(['data'=>[
+        return $this->sendSuccess(['token'=>[
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $token_ttl * 60
