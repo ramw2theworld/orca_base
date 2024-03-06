@@ -172,6 +172,8 @@ return [
         Modules\Role\Providers\RoleServiceProvider::class,
         Modules\Permission\Providers\PermissionServiceProvider::class,
         Modules\User\Providers\UserServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+
     ])->toArray(),
 
     /*
@@ -187,6 +189,9 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Jwt' => Tymon\JWTAuth\Providers\LaravelServiceProvider::class, 
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class, 
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     ])->toArray(),
 
 ];

@@ -17,7 +17,6 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class UserController extends Controller
 {
-    use RespondsWithJson;
     protected $userRepository;
 
     public function __construct(UserInterface $userRepository)
@@ -103,69 +102,69 @@ class UserController extends Controller
         return $this->sendSuccess($resource, "Users fetched successfully", 200);
     }
 
-/**
- * @OA\Post(
- *     path="/api/users",
- *     tags={"Users"},
- *     summary="Create a new user",
- *     @OA\Parameter(
- *         name="first_name",
- *         in="query",
- *         description="User's first name",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *      @OA\Parameter(
- *         name="last_name",
- *         in="query",
- *         description="User's last name",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         name="email",
- *         in="query",
- *         description="User's email",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         name="password",
- *         in="query",
- *         description="User's password",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         name="password_confirmation",
- *         in="query",
- *         description="User's confirm password",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *      @OA\Parameter(
- *         name="role_id",
- *         in="query",
- *         description="User's role",
- *         required=true,
- *         @OA\Schema(type="integer")
- *     ),
- *    @OA\Response(
- *     response=200,
- *     description="User Created Successfully",
- *     @OA\JsonContent(ref="#/components/schemas/User")
- *   ),
-*   @OA\Response(
-*     response=404,
-*     description="Role not found"
-*   ),
-*   @OA\Response(
-*     response=422,
-*     description="Please send valid data"
-*   ),
-*   security={{"bearerAuth":{}}}
-* )
-*/
+    /**
+     * @OA\Post(
+     *     path="/api/users",
+     *     tags={"Users"},
+     *     summary="Create a new user",
+     *     @OA\Parameter(
+     *         name="first_name",
+     *         in="query",
+     *         description="User's first name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *      @OA\Parameter(
+     *         name="last_name",
+     *         in="query",
+     *         description="User's last name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="User's email",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="password",
+     *         in="query",
+     *         description="User's password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="password_confirmation",
+     *         in="query",
+     *         description="User's confirm password",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *      @OA\Parameter(
+     *         name="role_id",
+     *         in="query",
+     *         description="User's role",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *    @OA\Response(
+     *     response=200,
+     *     description="User Created Successfully",
+     *     @OA\JsonContent(ref="#/components/schemas/User")
+     *   ),
+    *   @OA\Response(
+    *     response=404,
+    *     description="Role not found"
+    *   ),
+    *   @OA\Response(
+    *     response=422,
+    *     description="Please send valid data"
+    *   ),
+    *   security={{"bearerAuth":{}}}
+    * )
+    */
     public function create(UserCreateRequest $request): JsonResponse
     {
         try{
