@@ -25,9 +25,9 @@ class MakeModuleRepositoryInterface extends Command
      */
     public function handle()
     {
-        $name = $this->argument('name');
+        $name = ucfirst($this->argument('name'));
         $module = $this->argument('module');
-        $interfacePath = base_path("modules/{$module}/Repositories/Contracts/{$name}Interface.php");
+        $interfacePath = base_path("modules/{$module}/Repositories/Contracts/{$name}RepositoryInterface.php");
         $repositoryPath = base_path("modules/{$module}/Repositories/Eloquent/{$name}Repository.php");
 
         if (file_exists($interfacePath) || file_exists($repositoryPath)) {
