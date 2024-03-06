@@ -8,6 +8,18 @@ use Illuminate\Notifications\Notifiable;
 use Modules\Permission\Models\Permission;
 use Modules\User\Models\User;
 
+/**
+ * @OA\Schema(
+ *     title="Role",
+ *     description="Role model",
+ *     @OA\Xml(name="Role"),
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Admin"),
+ *     @OA\Property(property="slug", type="string", example="admin"),
+ *     @OA\Property(property="status", type="integer", example=1),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-04T13:42:53.000000Z"),
+ * )
+ */
 class Role extends Model
 {
     use HasFactory, Notifiable;
@@ -19,7 +31,10 @@ class Role extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        // Define your fillable attributes here
+        'name',
+        'slug',
+        'status',
+        
     ];
 
     /**
