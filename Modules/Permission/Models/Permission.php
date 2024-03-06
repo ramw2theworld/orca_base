@@ -7,6 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Modules\Role\Models\Role;
 
+
+/**
+ * @OA\Schema(
+ *     title="Permission",
+ *     description="Permission model",
+ *     @OA\Xml(name="Permission"),
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Create User"),
+ *     @OA\Property(property="slug", type="string", example="creat-user"),
+ *     @OA\Property(property="status", type="integer", example=1),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-04T13:42:53.000000Z"),
+ * )
+ */
 class Permission extends Model
 {
     use HasFactory, Notifiable;

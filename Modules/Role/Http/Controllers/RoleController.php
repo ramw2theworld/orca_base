@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 use Modules\Role\Http\Requests\RoleCreateRequest;
 use Modules\Role\Http\Resources\RoleResource;
 use Modules\Role\Repositories\Contracts\RoleRepositoryInterface;
-use Modules\Role\Repositories\Eloquent\RoleRepository;
 
 /**
  * @OA\SecurityScheme(

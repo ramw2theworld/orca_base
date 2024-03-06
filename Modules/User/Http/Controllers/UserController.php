@@ -7,13 +7,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Modules\Core\Traits\RespondsWithJson;
 use Modules\User\Http\Requests\UserCreateRequest;
 use Modules\User\Http\Resources\UserResource;
 use Modules\User\Repositories\Contracts\UserInterface;
 use OpenApi\Attributes as OA;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-
 
 class UserController extends Controller
 {
