@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('permissions', function (Blueprint $table) {
-            $table->string('slug')->unique()->after('name');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->string('slug')->nullable();
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('permissions', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table) {
             $table->dropColumn('slug');
         });
     }

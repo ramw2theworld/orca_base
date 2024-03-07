@@ -12,5 +12,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::put('/{slug}', [RoleController::class, 'update'])->name('roles.update');
         Route::delete('/{slug}', [RoleController::class, 'delete'])->name('roles.delete');
 
+        //attach permissions to role
+        Route::post('/{slug}/attach-permissions', [RoleController::class, 'attachOrDetachPermissionsToRole'])->name('attach.permissions');
+
     });
 });

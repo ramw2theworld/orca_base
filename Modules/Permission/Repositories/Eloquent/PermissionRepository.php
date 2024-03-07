@@ -59,7 +59,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         try{
             $slug = Str::slug($data['name'], '-');
 
-            $role = $this->model::create([
+            $permission = $this->model::create([
                 'name' => $data['name'],
                 'slug' => $slug,
                 'guard_name' => 'web'
@@ -67,7 +67,7 @@ class PermissionRepository implements PermissionRepositoryInterface
             ]);
 
             DB::commit();
-            return $role;
+            return $permission;
         }catch(Exception $ex){
             DB::rollBack();
             $errorCode = is_numeric($ex->getCode()) ? (int)$ex->getCode() : 0;
@@ -78,21 +78,21 @@ class PermissionRepository implements PermissionRepositoryInterface
     public function update(string $slug, array $data): ?Permission
     {
         try {
-            $role = $this->model::where('slug', $slug)->first();
-            if (!$role) {
-                throw new ModelNotFoundException('role not found');
+            $permission = $this->model::where('slug', $slug)->first();
+            if (!$permission) {
+                throw new ModelNotFoundException('Permission not found');
             }
 
-            $role->slug = Str::slug($data['name'], '-');    
+            $permission->slug = Str::slug($data['name'], '-');    
 
             foreach ($data as $key => $value) {
                 if (isset($data[$key])) {
-                    $role->$key = $value;
+                    $permission->$key = $value;
                 }
             }
-            $role->save();
+            $permission->save();
             
-            return $role;
+            return $permission;
         } catch (\Exception $ex) {
             throw new $ex($ex->getMessage());
         }

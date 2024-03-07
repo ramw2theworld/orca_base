@@ -3,6 +3,7 @@
 namespace Modules\Role\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -101,7 +102,7 @@ class RoleController extends Controller
 
         $roles = $this->roleRepository->all($searchQuery, $perPage, $direction, $sortBy);
         $resource = RoleResource::collection($roles);
-        return $this->sendSuccess($resource, "Roles fetched successfully", 200);
+        return $this->sendSuccess($resource, "Roles fetched successfully", Response::HTTP_OK);
     }
 
     /**
@@ -137,7 +138,7 @@ class RoleController extends Controller
         try{
             $roleCreated = $this->roleRepository->create($request->validated());
             $role = new RoleResource($roleCreated);
-            return $this->sendSuccess($role, "Role created successfully!", 200);
+            return $this->sendSuccess($role, "Role created successfully!", Response::HTTP_CREATED);
         }catch(\Exception $e){
             Log::error($e->getMessage());
             return $this->sendError('Role registration failed', ['error' => 'An error occurred while creating the user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -181,7 +182,7 @@ class RoleController extends Controller
         }
     
         $roleResource = new RoleResource($role);
-        return $this->sendSuccess($roleResource, "Role fetched successfully", 200);
+        return $this->sendSuccess($roleResource, "Role fetched successfully", Response::HTTP_OK);
     }
 
 
@@ -229,7 +230,7 @@ class RoleController extends Controller
                 return $this->sendError('Role not found', [], Response::HTTP_NOT_FOUND);
             }
             $roleResource = new RoleResource($role);
-            return $this->sendSuccess($roleResource, "Role updated successfully", 200);
+            return $this->sendSuccess($roleResource, "Role updated successfully", Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError('Role update failed', ['error' => 'An error occurred while updating the role: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -309,10 +310,72 @@ class RoleController extends Controller
     {
         try {
             $this->roleRepository->delete($slug);
-            return $this->sendSuccess([], "Role deleted successfully", 200);
+            return $this->sendSuccess([], "Role deleted successfully", Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError('Role deletion failed', ['error' => 'An error occurred while deleting the role: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *   path="/api/roles/{slug}/attach-permissions",
+     *   tags={"Roles"},
+     *   summary="Attach permissions to role",
+     *   description="Attach permissions identified by the given slug.",
+     *   @OA\Parameter(
+    *     name="slug",
+    *     in="path",
+    *     required=true,
+    *     description="Slug of the Role to attach permissions",
+    *     @OA\Schema(type="string")
+    *   ),
+    *   @OA\Parameter(
+    *     name="action",
+    *     in="path",
+    *     required=false,
+    *     description="Action should be either attach or detach",
+    *     @OA\Schema(type="string")
+    *   ),
+    *   @OA\RequestBody(
+    *     required=true,
+    *     description="Attach Permissions to the Role",
+    *     @OA\JsonContent(
+    *       required={"permissions"},
+    *       @OA\Property(
+    *         property="permissions",
+    *         type="array",
+    *         @OA\Items(type="string"),
+    *         description="Array of permission slugs to attach to the role"
+    *       )
+    *     )
+    *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Role's permissions updated successfully",
+     *     @OA\JsonContent(ref="#/components/schemas/Role")
+     *   ),
+     *   @OA\Response(
+     *     response=404,
+     *     description="Role not found"
+     *   ),
+     *   @OA\Response(
+     *     response=422,
+     *     description="Validation error"
+     *   ),
+     *   security={{"bearerAuth":{}}}
+     * )
+     */
+    public function attachOrDetachPermissionsToRole(string $slug, Request $request): JsonResponse
+    {
+        try{
+            $role = $this->roleRepository->attachOrDetachPermissionsToRole($slug, $request);
+            $roleResource = new RoleResource($role);
+            return $this->sendSuccess($roleResource, "Permissions attached to Role successfully", Response::HTTP_CREATED);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return $this->sendError('Permission attachment to role failed', ['error' => 'An error occurred while attaching permissions to role: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
