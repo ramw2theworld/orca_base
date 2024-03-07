@@ -70,12 +70,6 @@
  *     description="slug of the Role"
  *   ),
  *   @OA\Property(
- *     property="status",
- *     type="string",
- *     format="bool",
- *     description="Status of the Role"
- *   ),
- *   @OA\Property(
  *     property="created_at",
  *     type="string",
  *     format="date-time",

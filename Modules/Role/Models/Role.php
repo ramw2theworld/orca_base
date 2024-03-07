@@ -2,11 +2,12 @@
 
 namespace Modules\Role\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Modules\Permission\Models\Permission;
 use Modules\User\Models\User;
+use Spatie\Permission\Models\Role as SpatieRole;
 
 /**
  * @OA\Schema(
@@ -16,11 +17,10 @@ use Modules\User\Models\User;
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Admin"),
  *     @OA\Property(property="slug", type="string", example="admin"),
- *     @OA\Property(property="status", type="integer", example=1),
  *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-04T13:42:53.000000Z"),
  * )
  */
-class Role extends Model
+class Role extends SpatieRole
 {
     use HasFactory, Notifiable;
 
@@ -31,9 +31,9 @@ class Role extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'name', 
+        'guard_name', 
         'slug',
-        'status',
         
     ];
 
@@ -65,11 +65,11 @@ class Role extends Model
         return \Modules\Role\Database\Factories\RoleFactory::new();
     }
 
-    public function users() {
+    public function users(): BelongsToMany {
         return $this->belongsToMany(User::class);
     }
 
-    public function permissions() {
+    public function permissions(): BelongsToMany {
         return $this->belongsToMany(Permission::class);
     }
 }
