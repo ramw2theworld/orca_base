@@ -1237,10 +1237,6 @@
                         "type": "string",
                         "example": "creat-user"
                     },
-                    "status": {
-                        "type": "integer",
-                        "example": 1
-                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
