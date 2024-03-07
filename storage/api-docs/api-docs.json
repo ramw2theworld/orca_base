@@ -150,7 +150,7 @@
                 "tags": [
                     "Permissions"
                 ],
-                "summary": "Create a new role",
+                "summary": "Create a new permission",
                 "operationId": "5cda4e336f79977859a7307859307243",
                 "parameters": [
                     {
@@ -193,8 +193,8 @@
                 "tags": [
                     "Permissions"
                 ],
-                "summary": "Get a single role by slug",
-                "description": "Returns a single role by slug.",
+                "summary": "Get a single permission by slug",
+                "description": "Returns a single permission by slug.",
                 "operationId": "defb879fb74b022959f62597196d2fe4",
                 "parameters": [
                     {
@@ -231,14 +231,14 @@
                 "tags": [
                     "Permissions"
                 ],
-                "summary": "Update an existing role",
-                "description": "Updates the role identified by the given slug.",
+                "summary": "Update an existing permission",
+                "description": "Updates the permission identified by the given slug.",
                 "operationId": "70b6323c635c52c6d72439c6422b588b",
                 "parameters": [
                     {
                         "name": "slug",
                         "in": "path",
-                        "description": "slug of the role to update",
+                        "description": "slug of the permission to update",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -246,7 +246,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Data for updating the role",
+                    "description": "Data for updating the permission",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -284,14 +284,14 @@
                 "tags": [
                     "Permissions"
                 ],
-                "summary": "Delete a role",
-                "description": "Deletes a role identified by slug.",
+                "summary": "Delete a permission",
+                "description": "Deletes a permission identified by slug.",
                 "operationId": "a5129ffe6992a39084667d558d2ca676",
                 "parameters": [
                     {
                         "name": "slug",
                         "in": "path",
-                        "description": "slug of the role to be deleted",
+                        "description": "slug of the permission to be deleted",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -351,7 +351,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "An error occurred while deleting the role"
+                                            "example": "An error occurred while deleting the permission"
                                         }
                                     },
                                     "type": "object"
@@ -1267,10 +1267,6 @@
                     "slug": {
                         "type": "string",
                         "example": "admin"
-                    },
-                    "status": {
-                        "type": "integer",
-                        "example": 1
                     },
                     "created_at": {
                         "type": "string",

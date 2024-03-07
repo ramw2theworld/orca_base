@@ -24,7 +24,6 @@ class RoleRepository implements RoleRepositoryInterface
             'id', 
             'name', 
             'slug', 
-            'status', 
             'created_at'
         );
     
@@ -46,7 +45,7 @@ class RoleRepository implements RoleRepositoryInterface
             return $this->model->where("slug", $slug)->first();
         }
         catch(ModelNotFoundException $e){
-            throw new ModelNotFoundException("User does not exist!");
+            throw new ModelNotFoundException("Role does not exist!");
         }
         catch(Exception $e){
             throw new $e($e->getMessage());
@@ -62,7 +61,7 @@ class RoleRepository implements RoleRepositoryInterface
             $role = $this->model::create([
                 'name' => $data['name'],
                 'slug' => $slug,
-                'status' => true,
+                'guard_name' => 'web',
 
             ]);
             DB::commit();

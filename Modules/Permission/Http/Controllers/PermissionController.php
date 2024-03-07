@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Modules\Permission\Repositories\Contracts\PermissionRepositoryInterface;
-use Modules\Permission\Http\Requests\PermissionCreateRequest;
 use Modules\Permission\Http\Resources\PermissionResource;
 use Modules\Role\Http\Requests\RoleCreateRequest;
 

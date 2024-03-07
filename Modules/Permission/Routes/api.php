@@ -14,5 +14,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     });
 });
 
+Route::middleware(['role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        // Only users with the 'admin' role can access this
+    });
+});
+
 
 
