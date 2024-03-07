@@ -22,10 +22,13 @@ class PermissionFactory extends Factory
      */
     public function definition()
     {
-        $title = $this->faker->word;
-        return [
-            'name' => $title,
-            'slug' => Str::slug($title),
-        ];
+        $permission_names = include base_path('Modules/Role/Database/data/permissions.php');
+
+        foreach($permission_names as $permission_name) {
+            return [
+                'name' => $permission_name,
+                'slug' => Str::slug($permission_name),
+            ];
+        }
     }
 }

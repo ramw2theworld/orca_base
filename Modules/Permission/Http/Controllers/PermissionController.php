@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use LDAP\Result;
 use Modules\Permission\Repositories\Contracts\PermissionRepositoryInterface;
 use Modules\Permission\Http\Resources\PermissionResource;
 use Modules\Role\Http\Requests\RoleCreateRequest;
@@ -93,7 +94,7 @@ class PermissionController extends Controller
 
         $permissions = $this->permissionRepository->all($searchQuery, $perPage, $direction, $sortBy);
         $resource = PermissionResource::collection($permissions);
-        return $this->sendSuccess($resource, "Permissions fetched successfully", 200);
+        return $this->sendSuccess($resource, "Permissions fetched successfully", Response::HTTP_OK);
     }
 
     /**
@@ -129,7 +130,7 @@ class PermissionController extends Controller
         try{
             $permissionCreated = $this->permissionRepository->create($request->validated());
             $permission = new PermissionResource($permissionCreated);
-            return $this->sendSuccess($permission, "Permission created successfully!", 200);
+            return $this->sendSuccess($permission, "Permission created successfully!", Response::HTTP_CREATED);
         }catch(\Exception $e){
             Log::error($e->getMessage());
             return $this->sendError('Permission registration failed', ['error' => 'An error occurred while creating the user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -173,7 +174,7 @@ class PermissionController extends Controller
         }
     
         $permissionResource = new PermissionResource($permission);
-        return $this->sendSuccess($permissionResource, "Permission fetched successfully", 200);
+        return $this->sendSuccess($permissionResource, "Permission fetched successfully", Response::HTTP_OK);
     }
 
 
@@ -221,7 +222,7 @@ class PermissionController extends Controller
                 return $this->sendError('Permission not found', [], Response::HTTP_NOT_FOUND);
             }
             $permissionResource = new PermissionResource($permission);
-            return $this->sendSuccess($permissionResource, "Permission updated successfully", 200);
+            return $this->sendSuccess($permissionResource, "Permission updated successfully", Response::HTTP_OK);   
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError('Permission update failed', ['error' => 'An error occurred while updating the permission: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -301,7 +302,7 @@ class PermissionController extends Controller
     {
         try {
             $this->permissionRepository->delete($slug);
-            return $this->sendSuccess([], "Permission deleted successfully", 200);
+            return $this->sendSuccess([], "Permission deleted successfully", Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError('Permission deletion failed', ['error' => 'An error occurred while deleting the permission: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

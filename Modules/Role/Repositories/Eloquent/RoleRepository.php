@@ -9,6 +9,9 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Modules\Permission\Models\Permission;
 
 class RoleRepository implements RoleRepositoryInterface
 {
@@ -42,7 +45,7 @@ class RoleRepository implements RoleRepositoryInterface
     public function find(string $slug): ?Role
     {
         try{
-            return $this->model->where("slug", $slug)->first();
+            return $this->model::with(['permissions'])->where("slug", $slug)->first();
         }
         catch(ModelNotFoundException $e){
             throw new ModelNotFoundException("Role does not exist!");
@@ -105,6 +108,34 @@ class RoleRepository implements RoleRepositoryInterface
             }
             $this->model->delete();
         } catch (Exception $ex) {
+            throw new $ex($ex->getMessage());
+        }
+    }
+
+    public function attachOrDetachPermissionsToRole(string $slug, Request $request): ?Role
+    {
+        try {
+            $role = $this->model::where('slug', $slug)->first();
+            if (!$role) {   
+                throw new ModelNotFoundException('Role not found');
+            }
+
+            $permissions = $request->get('permissions', []);
+            $action = $request->get('action', 'attach');
+            $permissions = Permission::whereIn('slug', $permissions)->get();
+
+            if($action === "detach"){
+                $role->revokePermissionTo($permissions);
+            }
+            else{
+                $role->givePermissionTo($permissions);
+            }
+
+            $role->load('permissions');
+
+            return $role;
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
             throw new $ex($ex->getMessage());
         }
     }

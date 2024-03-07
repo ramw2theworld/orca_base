@@ -3,6 +3,7 @@
 namespace Modules\Role\Repositories\Contracts;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 use Modules\Role\Models\Role;
 
 interface RoleRepositoryInterface
@@ -12,4 +13,6 @@ interface RoleRepositoryInterface
     public function create(array $data): Role;
     public function update(string $slug, array $data): ?Role;
     public function delete(string $slug): void;
+
+    public function attachOrDetachPermissionsToRole(string $slug, Request $request): ?Role;
 }

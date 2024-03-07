@@ -20,7 +20,6 @@ class PermissionResource extends JsonResource
             'slug' => $this->slug,
             'created_at' => $this->slug,
             'created_at' => \Carbon\Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
-
         ];
     }
 }
