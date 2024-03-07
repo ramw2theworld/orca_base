@@ -24,15 +24,16 @@ class PermissionRepository implements PermissionRepositoryInterface
         ->select(
             'id', 
             'name', 
-            'slug', 
-            'status', 
-            'created_at'
+            'slug',  
+            'created_at',
         );
     
         if (!empty($search)) {
-            $query->where(function ($query) use ($search) {
-                $query->where("name", "like", "%{$search}%")
-                    ->orWhere("slug", "like", "%{$search}%");
+            $lowerSearch = strtolower($search);
+
+            $query->where(function ($query) use ($lowerSearch) {
+                $query->where(DB::raw('LOWER(name)'), 'like', "%{$lowerSearch}%")
+                      ->orWhere(DB::raw('LOWER(slug)'), 'like', "%{$lowerSearch}%");
             });
         }
         
@@ -61,9 +62,10 @@ class PermissionRepository implements PermissionRepositoryInterface
             $role = $this->model::create([
                 'name' => $data['name'],
                 'slug' => $slug,
-                'status' => true,
+                'guard_name' => 'web'
 
             ]);
+
             DB::commit();
             return $role;
         }catch(Exception $ex){
@@ -101,7 +103,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         try {
             $permission = $this->model::where('slug', $slug)->first();
             if (!$permission) {   
-                throw new ModelNotFoundException('Role not found');
+                throw new ModelNotFoundException('Permissions not found');
             }
             $this->model->delete();
         } catch (Exception $ex) {
