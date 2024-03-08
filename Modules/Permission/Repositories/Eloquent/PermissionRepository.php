@@ -62,7 +62,7 @@ class PermissionRepository implements PermissionRepositoryInterface
             $permission = $this->model::create([
                 'name' => $data['name'],
                 'slug' => $slug,
-                'guard_name' => 'web'
+                'guard_name' => 'api',
 
             ]);
 

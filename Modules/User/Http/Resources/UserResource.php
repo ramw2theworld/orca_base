@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Permission\Http\Resources\PermissionResource;
 use Modules\Role\Http\Resources\RoleResource;
 
 /**
@@ -31,6 +32,7 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'role' => new RoleResource($this->whenLoaded('role')),
             'created_at' => \Carbon\Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'permissions' => PermissionResource::collection($this->permissions),
         ];
     }
 }

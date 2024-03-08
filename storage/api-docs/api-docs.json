@@ -729,14 +729,14 @@
                 ]
             }
         },
-        "/api/roles/{slug}/attach-permissions": {
+        "/api/roles/{slug}/attach-detach-permissions": {
             "post": {
                 "tags": [
                     "Roles"
                 ],
                 "summary": "Attach permissions to role",
                 "description": "Attach permissions identified by the given slug.",
-                "operationId": "ff99ed843c3655948b1136d8e06b0644",
+                "operationId": "beb9892dff39c7632a2aecdefae49354",
                 "parameters": [
                     {
                         "name": "slug",

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Modules\User\Http\Requests\AssignPermissionsToUserRequest;
 use Modules\User\Http\Requests\UserCreateRequest;
 use Modules\User\Http\Resources\UserResource;
 use Modules\User\Repositories\Contracts\UserInterface;
@@ -198,10 +200,8 @@ class UserController extends Controller
      *   security={{"bearerAuth":{}}}
      * )
      */
-    public function show(Request $request): JsonResponse
+    public function show(string $username): JsonResponse
     {
-        $username = $request->input('username', '');
-
         $user = $this->userRepository->find($username);
 
         if (!$user) {
@@ -343,6 +343,59 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError('User deletion failed', ['error' => 'An error occurred while deleting the user: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/users/{username}",
+     *     tags={"Users"},
+     *     summary="Create a new user",
+     *     @OA\Parameter(
+     *       name="username",
+     *       in="path",
+     *       required=true,
+     *       description="Username of the user to assign permissions",
+     *       @OA\Schema(type="string")
+     *     ),
+     *      @OA\Parameter(
+     *         name="permissions",
+     *         in="query",
+     *         description="Array of Permissions",
+     *         required=true,
+     *         @OA\Schema(type="array")
+     *     ),
+     *    @OA\Response(
+     *     response=200,
+     *     description="Permissions attached to User Successfully",
+     *     @OA\JsonContent(ref="#/components/schemas/User")
+     *   ),
+    *   @OA\Response(
+    *     response=404,
+    *     description="User not found"
+    *   ),
+    *   @OA\Response(
+    *     response=422,
+    *     description="Please send valid data"
+    *   ),
+    *   security={{"bearerAuth":{}}}
+    * )
+    */
+    public function attachDetachPermissionToUser(AssignPermissionsToUserRequest $request, string $username): JsonResponse
+    {
+        try {
+            $validated = $request->validated();
+            $user = $this->userRepository->attachDetachPermissionsToUser($username, $validated);
+
+            if (!$user) {
+                return $this->sendError('User not found', [], Response::HTTP_NOT_FOUND);
+            }
+            $userResource = new UserResource($user);
+            return $this->sendSuccess($userResource, "Permissions attached to User successfully", 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return $this->sendError('User permissions updated', ['error' => 'An error occurred while updating the permissions to user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

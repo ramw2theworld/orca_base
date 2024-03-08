@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Role\Http\Controllers\RoleController;
 use Modules\User\Http\Controllers\AuthController;
 use Modules\User\Http\Controllers\UserController;
 
@@ -20,5 +19,11 @@ use Modules\User\Http\Controllers\UserController;
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
  });
+
+ Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::prefix('api/users')->group(function (){
+        Route::post('/{username}/attach-detach-permissions-users', [UserController::class, 'attachDetachPermissionToUser'])->name('fetch.all.user.permissions');
+    });
+});
 
 

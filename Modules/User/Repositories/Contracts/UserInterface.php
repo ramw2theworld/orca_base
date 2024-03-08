@@ -11,4 +11,6 @@ interface UserInterface
     public function create(array $data): User;
     public function update($id, array $data): ?User;
     public function delete(string $username): void;
+    public function attachDetachPermissionsToUser(string $username, array $data): ?User;
+
 }

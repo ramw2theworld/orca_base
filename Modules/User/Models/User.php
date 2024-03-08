@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Modules\Role\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
+
 
 /**
  * @OA\Schema(
@@ -27,7 +29,7 @@ use Modules\Role\Models\Role;
  */
 class User extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     protected $table = 'users';
     /**
@@ -72,5 +74,9 @@ class User extends Model
     protected static function newFactory()
     {
         return \Modules\User\Database\Factories\UserFactory::new();
+    }
+
+    public function guardName(){
+        return "api";
     }
 }

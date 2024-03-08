@@ -10,6 +10,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Role\Models\Role;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Modules\Permission\Models\Permission;
 
 class UserRepository implements UserInterface
 {
@@ -52,7 +54,8 @@ class UserRepository implements UserInterface
     public function find(string $username): ?User
     {
         try{
-            return $this->model::whereRaw('lower(username) = ?', strtolower($username))->first();
+            return $this->model::whereRaw('lower(username) = ?', strtolower($username))
+                ->with('permissions')->first();
         }catch(ModelNotFoundException $e){
             throw new ModelNotFoundException("User does not exist!");
         }catch(Exception $e){
@@ -120,6 +123,37 @@ class UserRepository implements UserInterface
             }
             $this->model->delete();
         } catch (Exception $ex) {
+            throw new $ex($ex->getMessage());
+        }
+    }
+
+    public function attachDetachPermissionsToUser(string $username, array $data): ?User
+    {
+        try {
+            $user = $this->model::where('username', $username)->first();
+            if (!$user) {
+                throw new ModelNotFoundException('User not found');
+            }
+            
+            $permissionsSlugs = $data['permissions'];
+            $action = $data['action'];
+            
+            $permissions = Permission::whereIn('slug', $permissionsSlugs)->get();
+    
+            if (count($permissions) === 0) {
+                throw new \Exception("One or more permissions not found.");
+            }
+    
+            if ($action === "detach") {
+                $user->revokePermissionTo($permissions);
+            } else {
+                $user->givePermissionTo($permissions);
+            }
+            $user->load('permissions');
+    
+            return $user;
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
             throw new $ex($ex->getMessage());
         }
     }
