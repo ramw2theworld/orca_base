@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         Log::info("seeding tables...");
 
         // Creating role admin and user
-        Role::create([
+        $adminRole = Role::create([
             'name' => 'Admin',
             'slug' => 'admin',
         ]);
@@ -49,10 +49,12 @@ class DatabaseSeeder extends Seeder
 
         $permissionNames = include base_path('Modules/Role/Database/data/permissions.php');
         foreach ($permissionNames as $permissionName) {
-            Permission::create([
+            $permissionCreated = Permission::create([
                 'name' => $permissionName,
                 'slug' => Str::slug($permissionName),
             ]);
+
+            $adminRole->givePermissionTo($permissionCreated);
         }
         Log::info("seeding done!");
 
