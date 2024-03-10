@@ -30,9 +30,9 @@ class UserFactory extends Factory
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $this->faker->unique()->safeEmail,
-            'password' => bcrypt('password'), // It's better to hash passwords, even in testing
-            'username' => strtolower($firstName) . strtolower($lastName) . rand(1000, 9999), // Combining first name, last name, and 4 random digits
-            'status' => $this->faker->boolean, // Randomly generates true or false
+            'password' => bcrypt('password'),
+            'username' => strtolower($firstName) . strtolower($lastName) . rand(1000, 9999),
+            'status' => $this->faker->boolean,
             'role_id' => Role::query()->inRandomOrder()->first()->id ?? null,
 
         ];

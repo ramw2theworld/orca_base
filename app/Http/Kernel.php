@@ -71,10 +71,9 @@ class Kernel extends HttpKernel
     ];
 
     protected $routeMiddleware = [
-        'jwt.auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
-        'jwt.refresh' => \Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
+        'jwt.auth' => \Modules\User\Http\Middleware\JwtTokenMiddleware::class,
 
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
     ];
 }

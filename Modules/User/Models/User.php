@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Modules\Role\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasPermissions;
 
 
 /**
@@ -29,7 +30,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasPermissions;
 
     protected $table = 'users';
     /**

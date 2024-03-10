@@ -1293,6 +1293,70 @@
                     }
                 ]
             }
+        },
+        "/api/users/{username}/attach-detach-permissions-users": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Attach or Detach permissions to a user",
+                "operationId": "830d7dfc498bce3a29c9d9cbc2f4c421",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username of the user to assign permissions",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "permissions",
+                        "in": "query",
+                        "description": "Array of Permissions",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "Action should be either attach or detach",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Permissions attached to User Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "422": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {

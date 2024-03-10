@@ -7,6 +7,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
@@ -45,11 +47,27 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         try{
-            $credentials = $request->only("email", "password");
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return $this->sendError('User login failed', ['error' => 'Bad credentials.'], Response::HTTP_UNAUTHORIZED);
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required|string',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
             }
-        
+    
+            $credentials = $request->only('email', 'password');
+    
+            if (!Auth::attempt($credentials)) {
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+    
+            $token = JWTAuth::attempt($credentials);
+    
+            if (!$token) {
+                return $this->sendError('Login failed', ['error' => 'Could not generate access token'], 401);
+            }
+    
             return $this->respondWithToken($token);
         }
         catch(Exception $exception){

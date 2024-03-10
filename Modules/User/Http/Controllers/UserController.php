@@ -349,39 +349,49 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/users/{username}",
+     *     path="/api/users/{username}/attach-detach-permissions-users",
      *     tags={"Users"},
-     *     summary="Create a new user",
+     *     summary="Attach or Detach permissions to a user",
      *     @OA\Parameter(
-     *       name="username",
-     *       in="path",
-     *       required=true,
-     *       description="Username of the user to assign permissions",
-     *       @OA\Schema(type="string")
+     *         name="username",
+     *         description="Username of the user to assign permissions",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
      *     ),
-     *      @OA\Parameter(
+     *     @OA\Parameter(
      *         name="permissions",
-     *         in="query",
      *         description="Array of Permissions",
      *         required=true,
-     *         @OA\Schema(type="array")
+     *         in="query",
+     *         @OA\Schema(
+     *             type="array",
+     *             @OA\Items(type="string")
+     *         )
      *     ),
-     *    @OA\Response(
-     *     response=200,
-     *     description="Permissions attached to User Successfully",
-     *     @OA\JsonContent(ref="#/components/schemas/User")
-     *   ),
-    *   @OA\Response(
-    *     response=404,
-    *     description="User not found"
-    *   ),
-    *   @OA\Response(
-    *     response=422,
-    *     description="Please send valid data"
-    *   ),
-    *   security={{"bearerAuth":{}}}
-    * )
-    */
+     *     @OA\Parameter(
+     *         name="action",
+     *         description="Action should be either attach or detach",
+     *         required=true,
+     *         in="query",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Permissions attached to User Successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid input"
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
+     */
     public function attachDetachPermissionToUser(AssignPermissionsToUserRequest $request, string $username): JsonResponse
     {
         try {
