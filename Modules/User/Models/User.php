@@ -2,13 +2,14 @@
 
 namespace Modules\User\Models;
 
-use App\Http\Middleware\Authenticate;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Modules\Role\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\HasPermissions;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 
 /**
@@ -28,9 +29,9 @@ use Spatie\Permission\Traits\HasPermissions;
  *     @OA\Property(property="password_confirmation", type="string", example="password01")
  * )
  */
-class User extends Model
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasRoles, HasPermissions;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions;
 
     protected $table = 'users';
     /**
@@ -45,7 +46,6 @@ class User extends Model
         'email',
         'password',
         'status',
-        'role_id',
     ];
 
     /**
@@ -68,8 +68,8 @@ class User extends Model
 
     protected $guarded = [];
 
-    public function role() {
-        return $this->belongsTo(Role::class, 'role_id');
+    public function roles() {
+        return $this->belongsToMany(Role::class);
     }
 
     protected static function newFactory()
@@ -79,5 +79,15 @@ class User extends Model
 
     public function guardName(){
         return "api";
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

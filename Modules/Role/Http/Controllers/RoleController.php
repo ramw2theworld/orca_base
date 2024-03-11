@@ -95,7 +95,6 @@ class RoleController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $this->middleware('permission:fetch roles');
         $searchQuery = $request->input('search', '');
         $perPage = $request->input('per_page', 15);
         $direction = $request->input('dir', 'asc');
@@ -370,7 +369,6 @@ class RoleController extends Controller
      */
     public function attachOrDetachPermissionsToRole(string $username, Request $request): JsonResponse
     {
-        dd($username, $request->all());
         try{
             $role = $this->roleRepository->attachOrDetachPermissionsToRole($username, $request);
             $roleResource = new RoleResource($role);

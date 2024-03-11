@@ -30,7 +30,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'status' => $this->status,
             'created_at' => $this->created_at,
-            'role' => new RoleResource($this->whenLoaded('role')),
+            'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'created_at' => \Carbon\Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'permissions' => PermissionResource::collection($this->permissions),
         ];

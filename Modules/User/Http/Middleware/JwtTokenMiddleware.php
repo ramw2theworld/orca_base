@@ -21,14 +21,16 @@ class JwtTokenMiddleware
     public function handle(Request $request, Closure $next)
     {
         try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return $this->unauthorized('User not found');
-            }
-
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
+            $user = JWTAuth::parseToken()->authenticate();
+            if (!$user) {
                 throw new AuthorizationException('User not found');
             }
         } catch (JWTException $e) {
+            \Log::info('Authenticated user:', ['user' => $user]);
+            \Log::info('User roles:', ['roles' => $user->roles()->pluck('name')]);
+            \Log::info('User permissions:', ['permissions' => $user->getAllPermissions()->pluck('name')]);
+
+
             $message = 'Unauthorized';
 
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {

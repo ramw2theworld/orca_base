@@ -22,7 +22,7 @@ class UserRepository implements UserInterface
 
     public function all(string $search = null, int $per_page, string $dir, string $sortCol): LengthAwarePaginator
     {
-        $query = $this->model::with('role')
+        $query = $this->model::with('roles')
         ->select(
             'users.id', 
             'users.first_name', 
@@ -30,7 +30,6 @@ class UserRepository implements UserInterface
             'users.email', 
             'users.username', 
             'users.status', 
-            'users.role_id', 
             'users.created_at'
         );
     
@@ -43,7 +42,7 @@ class UserRepository implements UserInterface
                     ->orWhere("email", "like", "%{$search}%")
                     ->orWhere("username", "like", "%{$search}%");
             })
-            ->orWhereHas('role', function ($q) use ($search) {
+            ->orWhereHas('roles', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             });
         }
@@ -54,8 +53,11 @@ class UserRepository implements UserInterface
     public function find(string $username): ?User
     {
         try{
-            return $this->model::whereRaw('lower(username) = ?', strtolower($username))
-                ->with('permissions')->first();
+            
+            return $this->model::whereRaw('lower(username) = ?', [strtolower($username)])
+            ->with('roles.permissions', 'permissions')
+            ->firstOrFail();
+
         }catch(ModelNotFoundException $e){
             throw new ModelNotFoundException("User does not exist!");
         }catch(Exception $e){
@@ -78,7 +80,6 @@ class UserRepository implements UserInterface
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
                 'username' => strtolower($data['first_name']) . strtolower($data['last_name']) . rand(1000, 9999),
-                'role_id' => $data['role_id'],
                 'status' => true,
 
             ]);
