@@ -21,10 +21,11 @@ Route::prefix('/users')
 
             Route::delete('/{username}', 'delete')->name('users.delete');
 
-            Route::post('/{username}/attach-detach-permissions-users', 'attachDetachPermissionToUser')
+            Route::post('/{username}/attach-detach-permissions-users', 'attachDetachPermissionsToUser')
                 ->middleware(['role_or_permission:admin|attach or detach permissions to user']);
-                
-            Route::post('/logout', 'logout')->name('logout');
+
+            Route::post('/{username}/attach-detach-roles-user', 'attachDetachRolesToUser')
+                ->middleware(['role_or_permission:admin|attach or detach roles to user']);
             
         });
 });
@@ -32,6 +33,8 @@ Route::prefix('/users')
  Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login')
         ->withoutMiddleware(['jwt.auth']);
+    
+    Route::post('/logout', 'logout')->name('logout')->middleware(['jwt.auth']);
 });
 
 

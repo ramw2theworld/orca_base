@@ -9,6 +9,7 @@ use Modules\Permission\Models\Permission;
 use Modules\Permission\Repositories\Contracts\PermissionRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\QueryException;
 
 
 class PermissionRepository implements PermissionRepositoryInterface
@@ -68,7 +69,17 @@ class PermissionRepository implements PermissionRepositoryInterface
 
             DB::commit();
             return $permission;
-        }catch(Exception $ex){
+        }
+        catch (QueryException $ex) {
+            DB::rollBack();
+            if ($ex->getCode() == 23000) {
+                if (str_contains($ex->getMessage(), 'Duplicate entry')) {
+                    throw new Exception("Permission already exists.", 23000);
+                }
+            }
+            throw $ex;
+        } 
+        catch(Exception $ex){
             DB::rollBack();
             $errorCode = is_numeric($ex->getCode()) ? (int)$ex->getCode() : 0;
             throw new \Exception($ex->getMessage(), $errorCode, $ex);

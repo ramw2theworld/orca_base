@@ -17,48 +17,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Log::info("seeding tables...");
+        Log::info("Starting database seeding...");
 
-        // Creating role admin and user
-        $adminRole = Role::create([
-            'name' => 'Admin',
-            'guard_name' => 'api',
-            'slug' => Str::slug('Admin', '-'),
-        ]);
-        Role::create([
-            'name' => 'User',
-            'guard_name' => 'api',
-            'slug' => Str::slug('User', '-')
-        ]);
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'Admin', 'guard_name' => 'api'],
+            ['slug' => Str::slug('Admin', '-')]
+        );
 
-        // Creating admin user
-        $adminUser = User::create([
-            'first_name' => "Admin",
-            'last_name' => "Admin",
-            'email' => "admin@admin.com",
-            'password' => bcrypt('password01'),
-            'username' => strtolower("AdminAdmin") . rand(1000, 9999),
-            'status' => 1,
-        ]);
+        $userRole = Role::firstOrCreate(
+            ['name' => 'User', 'guard_name' => 'api'],
+            ['slug' => Str::slug('User', '-')]
+        );
 
-        $adminUser = User::where('email', 'admin@admin.com')->first();
-        // Assigning Admin role to admin user
+        $adminUser = User::firstOrCreate(
+            ['email' => "admin@admin.com"],
+            [
+                'first_name' => "Admin",
+                'last_name' => "Admin",
+                'password' => bcrypt('password01'),
+                'username' => "adminadmin".rand(1000, 9000),
+                'status' => 1,
+            ]
+        );
+
         $adminUser->assignRole($adminRole);
 
-        // Creating permissions and assigning them to Admin role
         $permissionNames = include base_path('Modules/Role/Database/data/permissions.php');
         foreach ($permissionNames as $permissionName) {
-            $permission = Permission::create([
-                'name' => $permissionName,
-                'guard_name' => 'api',
-                'slug' => Str::slug($permissionName, '-')
-            ]);
+            $permission = Permission::firstOrCreate(
+                ['name' => $permissionName, 'guard_name' => 'api'],
+                ['slug' => Str::slug($permissionName, '-')]
+            );
 
-            // Give permission to Admin role
-            $adminRole->givePermissionTo($permission);
+            if (!$adminRole->hasPermissionTo($permission)) {
+                $adminRole->givePermissionTo($permission);
+            }
         }
 
-        Log::info("seeding done!");
-
+        Log::info("Database seeding completed successfully.");
     }
 }

@@ -22,5 +22,6 @@ return [
     //others
     'attach or detach permissions to user',
     'attach or detach permissions to role',
+    'attach or detach roles to user'
     
 ];

@@ -7,7 +7,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use LDAP\Result;
 use Modules\Permission\Repositories\Contracts\PermissionRepositoryInterface;
 use Modules\Permission\Http\Resources\PermissionResource;
 use Modules\Role\Http\Requests\RoleCreateRequest;
@@ -105,7 +104,7 @@ class PermissionController extends Controller
      *     @OA\Parameter(
      *         name="name",
      *         in="query",
-     *         description="Permission's first name",
+     *         description="Permission's name",
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
@@ -133,7 +132,7 @@ class PermissionController extends Controller
             return $this->sendSuccess($permission, "Permission created successfully!", Response::HTTP_CREATED);
         }catch(\Exception $e){
             Log::error($e->getMessage());
-            return $this->sendError('Permission registration failed', ['error' => 'An error occurred while creating the user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->sendError($e->getMessage(), ['error' => 'An error occurred while creating the permission: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

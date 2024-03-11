@@ -24,7 +24,6 @@ use Laravel\Sanctum\HasApiTokens;
  *     @OA\Property(property="username", type="string", example="johndoe"),
  *     @OA\Property(property="status", type="integer", example=1),
  *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-04T13:42:53.000000Z"),
- *     @OA\Property(property="role_id", type="integer", example=2),
  *     @OA\Property(property="password", type="string", example="password01"),
  *     @OA\Property(property="password_confirmation", type="string", example="password01")
  * )

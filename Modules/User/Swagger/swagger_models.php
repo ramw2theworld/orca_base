@@ -41,12 +41,7 @@
  *     type="string",
  *     format="date-time",
  *     description="Date of creation of the User"
- *   ),
- *   @OA\Property(
- *     property="role",
- *     ref="#/components/schemas/Role"
  *   )
- * )
  */
 
  /**

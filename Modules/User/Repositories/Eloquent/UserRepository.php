@@ -3,15 +3,14 @@
 namespace Modules\User\Repositories\Eloquent;
 
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
 use Modules\User\Models\User;
 use Modules\User\Repositories\Contracts\UserInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Modules\Role\Models\Role;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Permission\Models\Permission;
+use Modules\Role\Models\Role;
 
 class UserRepository implements UserInterface
 {
@@ -149,6 +148,39 @@ class UserRepository implements UserInterface
             $user->load('permissions');
     
             return $user;
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            throw new $ex($ex->getMessage());
+        }
+    }
+
+    
+    public function attachDetachRolesToUser(string $username, array $data): ?User
+    {
+        try {
+            $user = $this->model::where('username', $username)->first();
+            if (!$user) {
+                throw new ModelNotFoundException('User not found');
+            }
+            
+            $slugs = $data['roles'];
+            $action = $data['action'];
+            
+            $roles = Role::whereIn('slug', $slugs)->get();
+            if (count($roles) === 0) {
+                throw new \Exception("One or more roles not found.");
+            }
+    
+            foreach($roles as $role){
+                if ($action === "attach") {
+                    $user->assignRole($role);
+                } else {
+                    $user->removeRole($role);
+                }
+            }
+            $user->load('roles');
+            return $user;
+
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             throw new $ex($ex->getMessage());
