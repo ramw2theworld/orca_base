@@ -53,7 +53,7 @@ class UserRepository implements UserInterface
     public function find(string $username): ?User
     {
         try{
-            
+
             return $this->model::whereRaw('lower(username) = ?', [strtolower($username)])
             ->with('roles.permissions', 'permissions')
             ->firstOrFail();
@@ -69,12 +69,7 @@ class UserRepository implements UserInterface
     {
         DB::beginTransaction();
         try{
-            $role = Role::find($data["role_id"]);
-            if(!$role){
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Role does not exist!");
-            }
-
-            $user = $this->model::create([
+           $user = $this->model::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'email' => $data['email'],
@@ -83,10 +78,11 @@ class UserRepository implements UserInterface
                 'status' => true,
 
             ]);
-            $user->load('role');
+            $user->assignRole('User');
 
+            // $user->load('roles');
             DB::commit();
-            return $user;
+            return $user->fresh();
         }catch(Exception $ex){
             DB::rollBack();
             $errorCode = is_numeric($ex->getCode()) ? (int)$ex->getCode() : 0;
@@ -94,10 +90,10 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function update($id, array $data): ?User
+    public function update($username, array $data): ?User
     {
         try {
-            $user = $this->model::findOrFail($id);
+            $user = $this->model::where('username', $username)->first();
             if (!$user) {
                 throw new ModelNotFoundException('User not found');
             }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\User\Http\Requests\AssignPermissionsToUserRequest;
 use Modules\User\Http\Requests\UserCreateRequest;
@@ -243,17 +242,16 @@ class UserController extends Controller
      *   security={{"bearerAuth":{}}}
      * )
      */
-    public function update(UserCreateRequest $request, $id): JsonResponse
+    public function update(UserCreateRequest $request, $username): JsonResponse
     {
         try {
             $validated = $request->validated();
 
-            // Optionally hash the password if it's provided in the update request
             if (isset($validated['password'])) {
                 $validated['password'] = bcrypt($validated['password']);
             }
 
-            $user = $this->userRepository->update($id, $validated);
+            $user = $this->userRepository->update($username, $validated);
 
             if (!$user) {
                 return $this->sendError('User not found', [], Response::HTTP_NOT_FOUND);
@@ -405,7 +403,7 @@ class UserController extends Controller
             return $this->sendSuccess($userResource, "Permissions attached to User successfully", 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->sendError('User permissions updated', ['error' => 'An error occurred while updating the permissions to user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->sendError('An error occurred while attaching permissions to user: ', ['error' => 'An error occurred while updating the permissions to user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
