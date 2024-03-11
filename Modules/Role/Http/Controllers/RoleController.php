@@ -320,7 +320,7 @@ class RoleController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/api/roles/{slug}/attach-permissions",
+     *   path="/api/roles/{slug}/attach-detach-permissions",
      *   tags={"Roles"},
      *   summary="Attach permissions to role",
      *   description="Attach permissions identified by the given slug.",
@@ -367,10 +367,10 @@ class RoleController extends Controller
      *   security={{"bearerAuth":{}}}
      * )
      */
-    public function attachOrDetachPermissionsToRole(string $slug, Request $request): JsonResponse
+    public function attachOrDetachPermissionsToRole(string $username, Request $request): JsonResponse
     {
         try{
-            $role = $this->roleRepository->attachOrDetachPermissionsToRole($slug, $request);
+            $role = $this->roleRepository->attachOrDetachPermissionsToRole($username, $request);
             $roleResource = new RoleResource($role);
             return $this->sendSuccess($roleResource, "Permissions attached to Role successfully", Response::HTTP_CREATED);
         }catch(Exception $e){

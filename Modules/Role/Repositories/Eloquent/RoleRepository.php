@@ -64,7 +64,7 @@ class RoleRepository implements RoleRepositoryInterface
             $role = $this->model::create([
                 'name' => $data['name'],
                 'slug' => $slug,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
 
             ]);
             DB::commit();

@@ -729,14 +729,14 @@
                 ]
             }
         },
-        "/api/roles/{slug}/attach-permissions": {
+        "/api/roles/{slug}/attach-detach-permissions": {
             "post": {
                 "tags": [
                     "Roles"
                 ],
                 "summary": "Attach permissions to role",
                 "description": "Attach permissions identified by the given slug.",
-                "operationId": "ff99ed843c3655948b1136d8e06b0644",
+                "operationId": "beb9892dff39c7632a2aecdefae49354",
                 "parameters": [
                     {
                         "name": "slug",
@@ -1080,15 +1080,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "role_id",
-                        "in": "query",
-                        "description": "User's role",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
                     }
                 ],
                 "responses": {
@@ -1293,6 +1284,138 @@
                     }
                 ]
             }
+        },
+        "/api/users/{username}/attach-detach-permissions-users": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Attach or Detach permissions to a user",
+                "operationId": "c46449981afa34363661db840b8bffab",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username of the user to assign permissions",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "permissions": {
+                                        "description": "Array of permission slugs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "action": {
+                                        "description": "Action should be either 'attach' or 'detach'",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permissions attached/detached to User Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "422": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{username}/attach-detach-roles-user": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Attach or Detach roles to a user",
+                "operationId": "d04f9813144ede2219448e6e4a2eea5c",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username of the user to assign roles",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "roles": {
+                                        "description": "Array of role slugs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "action": {
+                                        "description": "Action should be either 'attach' or 'detach'",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Roles attached/detached to User Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "422": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1383,10 +1506,6 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2024-03-04T13:42:53.000000Z"
-                    },
-                    "role_id": {
-                        "type": "integer",
-                        "example": 2
                     },
                     "password": {
                         "type": "string",

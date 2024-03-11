@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Modules\User\Http\Requests\AssignPermissionsToUserRequest;
+use Modules\User\Http\Requests\AttachOrDetachRolesToUserRequest;
 use Modules\User\Http\Requests\UserCreateRequest;
 use Modules\User\Http\Resources\UserResource;
 use Modules\User\Repositories\Contracts\UserInterface;
@@ -139,13 +141,6 @@ class UserController extends Controller
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
-     *      @OA\Parameter(
-     *         name="role_id",
-     *         in="query",
-     *         description="User's role",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
      *    @OA\Response(
      *     response=200,
      *     description="User Created Successfully",
@@ -198,10 +193,8 @@ class UserController extends Controller
      *   security={{"bearerAuth":{}}}
      * )
      */
-    public function show(Request $request): JsonResponse
+    public function show(string $username): JsonResponse
     {
-        $username = $request->input('username', '');
-
         $user = $this->userRepository->find($username);
 
         if (!$user) {
@@ -243,17 +236,16 @@ class UserController extends Controller
      *   security={{"bearerAuth":{}}}
      * )
      */
-    public function update(UserCreateRequest $request, $id): JsonResponse
+    public function update(UserCreateRequest $request, $username): JsonResponse
     {
         try {
             $validated = $request->validated();
 
-            // Optionally hash the password if it's provided in the update request
             if (isset($validated['password'])) {
                 $validated['password'] = bcrypt($validated['password']);
             }
 
-            $user = $this->userRepository->update($id, $validated);
+            $user = $this->userRepository->update($username, $validated);
 
             if (!$user) {
                 return $this->sendError('User not found', [], Response::HTTP_NOT_FOUND);
@@ -343,6 +335,132 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError('User deletion failed', ['error' => 'An error occurred while deleting the user: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/users/{username}/attach-detach-permissions-users",
+     *     tags={"Users"},
+     *     summary="Attach or Detach permissions to a user",
+     *     @OA\Parameter(
+     *         name="username",
+     *         description="Username of the user to assign permissions",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="permissions",
+     *                 type="array",
+     *                 @OA\Items(type="string"),
+     *                 description="Array of permission slugs"
+     *             ),
+     *             @OA\Property(
+     *                 property="action",
+     *                 type="string",
+     *                 description="Action should be either 'attach' or 'detach'"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Permissions attached/detached to User Successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid input"
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
+     */
+    public function attachDetachPermissionsToUser(AssignPermissionsToUserRequest $request, string $username): JsonResponse
+    {
+        try {
+            $validated = $request->validated();
+            $user = $this->userRepository->attachDetachPermissionsToUser($username, $validated);
+
+            if (!$user) {
+                return $this->sendError('User not found', [], Response::HTTP_NOT_FOUND);
+            }
+            $userResource = new UserResource($user);
+            return $this->sendSuccess($userResource, "Permissions attached/detached to User successfully", 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return $this->sendError('An error occurred while attaching/detaching permissions to user: ', ['error' => 'An error occurred while updating the permissions to user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/users/{username}/attach-detach-roles-user",
+     *     tags={"Users"},
+     *     summary="Attach or Detach roles to a user",
+     *     @OA\Parameter(
+     *         name="username",
+     *         description="Username of the user to assign roles",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="roles",
+     *                 type="array",
+     *                 @OA\Items(type="string"),
+     *                 description="Array of role slugs"
+     *             ),
+     *             @OA\Property(
+     *                 property="action",
+     *                 type="string",
+     *                 description="Action should be either 'attach' or 'detach'"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Roles attached/detached to User Successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid input"
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
+     */
+    public function attachDetachRolesToUser(AttachOrDetachRolesToUserRequest $request, string $username): JsonResponse
+    {
+        try {
+            $validated = $request->validated();
+            $user = $this->userRepository->attachDetachRolesToUser($username, $validated);
+
+            if (!$user) {
+                return $this->sendError('User not found', [], Response::HTTP_NOT_FOUND);
+            }
+            $userResource = new UserResource($user);
+            return $this->sendSuccess($userResource, "Roles attached/detached to User successfully", 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return $this->sendError('An error occurred while attaching/detaching roles to user: ', ['error' => 'An error occurred while updating the permissions to user: '. $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
