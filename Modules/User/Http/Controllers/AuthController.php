@@ -50,41 +50,51 @@ class AuthController extends Controller
                 'email' => 'required|email',
                 'password' => 'required|string',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-    
+
             $credentials = $request->only('email', 'password');
-    
+
             if (!Auth::attempt($credentials)) {
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
-    
+
             $token = JWTAuth::attempt($credentials);
-    
+
             if (!$token) {
                 return $this->sendError('Login failed', ['error' => 'Could not generate access token'], 401);
             }
-    
+
             return $this->respondWithToken($token);
         }
         catch(Exception $exception){
-            return $this->sendError('User login failed', 
-            ['error' => 'An error occurred while generating login: '.$exception->getMessage()], 
+            return $this->sendError('User login failed',
+            ['error' => 'An error occurred while generating login: '.$exception->getMessage()],
             Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        
+
     }
 
     protected function respondWithToken($token): JsonResponse
     {
         $token_ttl = auth('api')->factory()->getTTL();
-        return $this->sendSuccess(['token'=>[
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $token_ttl * 60
-        ]], 'Access token generated successfully', 200);
+        $user = Auth::user();
+        $roles = $user->roles->pluck('name');
+        $permissions = $user->getAllPermissions()->pluck('name');
+
+        return $this->sendSuccess(
+            [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => $token_ttl * 60,
+                'user' => [
+                    'email' => $user->email,
+                    'roles' => $roles,
+                    'permissions' => $permissions,
+                ],
+            ], 'Access token generated successfully', 200);
     }
 
     /**
@@ -118,8 +128,8 @@ class AuthController extends Controller
             return $this->sendSuccess([], 'Logout successfully', 200);
         }
         catch(Exception $exception){
-            return $this->sendError('User login failed', 
-            ['error' => 'An error occurred while generating login: '.$exception->getMessage()], 
+            return $this->sendError('User login failed',
+            ['error' => 'An error occurred while generating login: '.$exception->getMessage()],
             Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
