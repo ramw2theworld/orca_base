@@ -42,7 +42,6 @@ class JwtTokenMiddleware
             throw new AuthorizationException($message);
         }
 
-        // Perform authorization check based on the requested route's required roles/permissions
         $this->authorize($request, $user);
 
         return $next($request);
@@ -59,25 +58,22 @@ class JwtTokenMiddleware
     {
         $route = $request->route();
 
-        // Check for role requirement
         if ($roles = $route->middleware('role')) {
             foreach ($roles as $role) {
                 if ($user->hasRole($role)) {
-                    return; // User has the required role; allow access
+                    return;
                 }
             }
         }
 
-        // Check for permission requirement
         if ($permissions = $route->middleware('permission')) {
             foreach ($permissions as $permission) {
                 if ($user->hasPermissionTo($permission)) {
-                    return; // User has the required permission; allow access
+                    return;
                 }
             }
         }
 
-        // If the user does not have the required role or permission, throw an exception
         throw new AuthorizationException('You do not have permission to access this resource.');
     }
 }
