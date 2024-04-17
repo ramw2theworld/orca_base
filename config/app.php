@@ -176,6 +176,7 @@ return [
         Modules\Role\Providers\RoleServiceProvider::class,
         Modules\Permission\Providers\PermissionServiceProvider::class,
         Modules\User\Providers\UserServiceProvider::class,
+        Modules\CarCheck\Providers\CarCheckProvider::class,
 
     ])->toArray(),
 

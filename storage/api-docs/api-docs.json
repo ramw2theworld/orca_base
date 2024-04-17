@@ -1416,6 +1416,62 @@
                     }
                 ]
             }
+        },
+
+        "/api/v1/car-check/{reg_number}": {
+            "get": {
+                "tags": ["Car Check"],
+                "summary": "Get car information by Registration Number",
+                "description": "Returns information of a car by its registration number.",
+                "operationId": "getCarInfoByRegNumber",
+                "parameters": [
+                    {
+                        "name": "reg_number",
+                        "in": "path",
+                        "required": true,
+                        "description": "The registration number of the car to fetch details for.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                
+                                                "model": {
+                                                    "type": "string",
+                                                    "example": "KM12AKK"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Car not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
