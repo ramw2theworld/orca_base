@@ -1472,6 +1472,335 @@
                     }
                 ]
             }
+        },
+        "/api/payment-providers": {
+            "get": {
+                "tags": [
+                    "Payment Providers"
+                ],
+                "summary": "Get list of payment providers",
+                "description": "Returns all payment providers with optional search, pagination, and sorting.",
+                "operationId": "6a0efac0498f13348aca217f0fa7ca97",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PaymentProvider"
+                                            }
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment providers fetched successfully"
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://api.example.com/api/payment-providers?page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://api.example.com/api/payment-providers?page=10"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": "null"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://api.example.com/api/payment-providers?page=2"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://api.example.com/api/payment-providers"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 150
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Payment Providers"
+                ],
+                "summary": "Create a new Provider",
+                "operationId": "5cda4e336f79977859a7307859307243",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "name of the payment provider",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "description": "is_active of the payment provider",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment provider Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentProvider"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Provider not found"
+                    },
+                    "422": {
+                        "description": "Please send valid data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/payment-providers/{id}": {
+            "get": {
+                "tags": [
+                    "Payment Providers"
+                ],
+                "summary": "Get a single permission by id",
+                "description": "Returns a single permission by id.",
+                "operationId": "defb879fb74b022959f62597196d2fe4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentProvider"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Provider not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Payment Providers"
+                ],
+                "summary": "Update an existing provider",
+                "description": "Updates the provider identified by the given id.",
+                "operationId": "70b6323c635c52c6d72439c6422b588b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the provider to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Data for updating the payment provider",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PaymentProvider"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment provider updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentProvider"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "PaymentProvider not found"
+                    },
+                    "422": {
+                        "description": "Validate your inputs"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Payment Providers"
+                ],
+                "summary": "Delete a provider",
+                "description": "Deletes a provider identified by id.",
+                "operationId": "a5129ffe6992a39084667d558d2ca676",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the provider to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment provider deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment provider deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Provider not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Provider not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred while deleting the provider"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1575,6 +1904,28 @@
                 "type": "object",
                 "xml": {
                     "name": "User"
+                }
+            },
+            "PaymentProvider": {
+                "title": "PaymentProvider",
+                "description": "PaymentProvider model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Stripe"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PaymentProvider"
                 }
             }
         },

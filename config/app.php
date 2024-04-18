@@ -177,6 +177,8 @@ return [
         Modules\Permission\Providers\PermissionServiceProvider::class,
         Modules\User\Providers\UserServiceProvider::class,
         Modules\CarCheck\Providers\CarCheckProvider::class,
+        Modules\PaymentProvider\Providers\PaymentServiceProvider::class,
+
 
     ])->toArray(),
 
