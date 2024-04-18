@@ -4,11 +4,12 @@ namespace Modules\PaymentProvider\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Modules\PaymentProvider\Http\Resources\PaymentProviderResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Modules\PaymentProvider\Http\Resources\CurrencyResource;
 use Modules\PaymentProvider\Repositories\Contracts\CurrencyRepositoryInterface;
 
 /**
@@ -67,11 +68,11 @@ class CurrencyController extends Controller
     public function index()
     {
         try{
-            $paymentProviders = $this->currencyRepository->all();
-            $resource = PaymentProviderResource::collection($paymentProviders);
-            return $this->sendSuccess($resource, "Currencys fetched successfully", Response::HTTP_OK);
+            $currencies = $this->currencyRepository->all();
+            $resource = CurrencyResource::collection($currencies);
+            return $this->sendSuccess($resource, "Currencies fetched successfully", Response::HTTP_OK);
         } catch (Exception $ex) {
-            Log::info('An error occurred while fetching providers data: ', $ex->getMessage());
+            Log::info('An error occurred while fetching currencies data: ', $ex->getMessage());
             return $this->sendError($ex->getMessage(), [], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -85,9 +86,9 @@ class CurrencyController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "is_active"},
-     *             @OA\Property(property="name", type="string", example="Provider Name"),
-     *             @OA\Property(property="is_active", type="boolean", example=true)
+     *             required={"code", "symbol"},
+     *             @OA\Property(property="name", type="string", example="Currency Name"),
+     *             @OA\Property(property="symbol", type="string", example=$)
      *         )
      *     ),
      *     @OA\Response(
@@ -109,14 +110,13 @@ class CurrencyController extends Controller
     public function store(Request $request){
         try {
             $data = $request->validate([
-                'name' => 'required|string',
-                'is_active' => 'required|string|in:true,false'
+                'code' => 'required|string|unique:currencies,code',
+                'symbol' => 'required|string'
             ]);
-            $data['is_active'] = $data['is_active'] === 'true';
 
-            $paymentProvider = $this->currencyRepository->create($data);
-            $provider = new PaymentProviderResource($paymentProvider);
-            return $this->sendSuccess($provider, "Currency created successfully", Response::HTTP_CREATED);
+            $currency = $this->currencyRepository->create($data);
+            $currencyResouce = new CurrencyResource($currency);
+            return $this->sendSuccess($currencyResouce, "Currency created successfully", Response::HTTP_CREATED);
         } catch (Exception $ex) {
             Log::info('Received data: ', $request->all());
             return $this->sendError($ex->getMessage(), [], Response::HTTP_BAD_REQUEST);
@@ -127,8 +127,8 @@ class CurrencyController extends Controller
      * @OA\Get(
      *   path="/api/currencies/{id}",
      *   tags={"Currencies"},
-     *   summary="Get a single provider by id",
-     *   description="Returns a single provider by id.",
+     *   summary="Get a single currency by id",
+     *   description="Returns a single currency by id.",
      *   @OA\Parameter(
      *     name="id",
      *     in="path",
@@ -149,11 +149,15 @@ class CurrencyController extends Controller
      */
     public function show(int $id){
         try{
-            $paymentProvider = $this->currencyRepository->find($id);
-            $resource = new PaymentProviderResource($paymentProvider);
+            $currency = $this->currencyRepository->find($id);
+            $resource = new CurrencyResource($currency);
             return $this->sendSuccess($resource, "Currency fetched successfully", Response::HTTP_OK);
-        } catch (Exception $ex) {
-            Log::info('An error occurred while fetching providers data: ', $ex->getMessage());
+        }catch(ModelNotFoundException $ex){
+            Log::info('Currency not found: '. $ex->getMessage());
+            return $this->sendError($ex->getMessage(), [], Response::HTTP_NOT_FOUND);
+        } 
+        catch (Exception $ex) {
+            Log::info('An error occurred while fetching currency data: ', $ex->getMessage());
             return $this->sendError($ex->getMessage(), [], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -163,28 +167,28 @@ class CurrencyController extends Controller
      * @OA\Put(
      *   path="/api/currencies/{id}",
      *   tags={"Currencies"},
-     *   summary="Update an existing provider",
-     *   description="Updates the provider identified by the given id.",
+     *   summary="Update an existing currency",
+     *   description="Updates the currency identified by the given id.",
      *   @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     description="id of the provider to update",
+     *     description="id of the currency to update",
      *     @OA\Schema(type="string")
      *   ),
      *   @OA\RequestBody(
      *     required=true,
-     *     description="Data for updating the provider",
+     *     description="Data for updating the currency",
      *     @OA\JsonContent(ref="#/components/schemas/Currency")
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="PaymentProvider updated successfully",
+     *     description="Ccurrency updated successfully",
      *     @OA\JsonContent(ref="#/components/schemas/Currency")
      *   ),
      *   @OA\Response(
      *     response=404,
-     *     description="PaymentProvider not found"
+     *     description="Currency not found"
      *   ),
      *   @OA\Response(
      *     response=422,
@@ -197,16 +201,18 @@ class CurrencyController extends Controller
     {
         try {
             $data = $request->validate([
-                'name' => 'sometimes|string',
-                'is_active' => 'sometimes|string|in:true,false'
+                'code' => 'sometimes|string',
+                'symbol' => 'sometimes|string'
             ]);
-            if(isset($data['is_active']))
-                $data['is_active'] = $data['is_active'] === 'true';
-
-            $paymentProvider = $this->currencyRepository->update($data, $id);
-            $provider = new PaymentProviderResource($paymentProvider);
-            return $this->sendSuccess($provider, "Currency updated successfully", Response::HTTP_CREATED);
-        } catch (Exception $ex) {
+            
+            $currencyUpdated = $this->currencyRepository->update($data, $id);
+            $currency = new CurrencyResource($currencyUpdated);
+            return $this->sendSuccess($currency, "Currency updated successfully", Response::HTTP_CREATED);
+        } catch(ModelNotFoundException $ex){
+            Log::info('Currency not found: '. $ex->getMessage());
+            return $this->sendError($ex->getMessage(), [], Response::HTTP_NOT_FOUND);
+        }  
+        catch (Exception $ex) {
             Log::info('Received data: ', $request->all());
             return $this->sendError($ex->getMessage(), [], Response::HTTP_BAD_REQUEST);
         }
@@ -286,9 +292,13 @@ class CurrencyController extends Controller
         try {
             $this->currencyRepository->delete($id);
             return $this->sendSuccess([], "Currency deleted successfully", Response::HTTP_OK);
-        } catch (\Exception $e) {
+        } catch(ModelNotFoundException $ex){
+            Log::info('Currency not found: '. $ex->getMessage());
+            return $this->sendError($ex->getMessage(), [], Response::HTTP_NOT_FOUND);
+        }  
+        catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->sendError('Currency deletion failed', ['error' => 'An error occurred while deleting the Provider: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->sendError('Currency deletion failed', ['error' => 'An error occurred while deleting the Currency: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

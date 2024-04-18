@@ -6,55 +6,59 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use Modules\PaymentProvider\Models\PaymentProvider;
-use Modules\PaymentProvider\Repositories\Contracts\PaymentProviderRepositoryInterface;
-use Illuminate\Support\Str;
+use Modules\PaymentProvider\Models\Currency;
 use Modules\PaymentProvider\Repositories\Contracts\CurrencyRepositoryInterface;
+use Illuminate\Support\Str;
 
 class CurrencyRepository implements CurrencyRepositoryInterface
 {
     protected $model;
-    public function __construct(PaymentProvider $model){
+    public function __construct(Currency $model){
         $this->model = $model;
     }
 
     public function all(): Collection
     {
+        return $this->model->get();
+        
         $query = $this->model
             ->select(
                 'id', 
-                'name', 
-                'is_active', 
+                'code', 
+                'symbol', 
                 'created_at'
             );
     
         return $query->orderBy('id', 'desc')->get();
     }
 
-    public function find(int $id): PaymentProvider
+    public function find(int $id): Currency
     {
         try{
-            return $this->model->whereId($id)->first();
+            $currency = $this->model->whereId($id)->first();
+            if (!$currency) {
+                throw new ModelNotFoundException('Currency not found');
+            }
+            return $currency;
         }
         catch(ModelNotFoundException $exception){
-            throw new ModelNotFoundException('Provider not found');
+            throw new ModelNotFoundException('Currency not found');
         }
         catch (Exception $exception){
-            throw new Exception('Payment Provider not found!');
+            throw new Exception('Something went wrong. Please try again!');
         }
     }
 
-    public function create(array $data): PaymentProvider
+    public function create(array $data): Currency
     {
         DB::beginTransaction();
         try{
-            $payment_provider = $this->model::create([
-                'name' => $data['name'],
-                'is_active' => $data['is_active'],
-
+            $currency = $this->model::create([
+                'code' => Str::lower($data['code']),
+                'symbol' => $data['symbol'],
             ]);
             DB::commit();
-            return $payment_provider;
+            return $currency;
         }catch(Exception $ex){
             DB::rollBack();
             $errorCode = is_numeric($ex->getCode()) ? (int)$ex->getCode() : 0;
@@ -62,20 +66,20 @@ class CurrencyRepository implements CurrencyRepositoryInterface
         }
     }
 
-    public function update(array $data, int $id): PaymentProvider
+    public function update(array $data, int $id): Currency
     {
         try {
-            $provider = $this->model::where('id', $id)->first();
-            if (!$provider) {
-                throw new ModelNotFoundException('Provider not found');
+            $currency = $this->model::where('id', $id)->first();
+            if (!$currency) {
+                throw new ModelNotFoundException('Currency not found');
             }
 
-            $provider->name = $data['name']??$provider->name;
-            $provider->is_active = $data['is_active']??$provider->is_active;
+            $currency->code = $data['code']??$currency->code;
+            $currency->symbol = $data['symbol']??$currency->symbol;
 
-            $provider->save();
+            $currency->save();
             
-            return $provider;
+            return $currency;
         } catch (\Exception $ex) {
             throw new $ex($ex->getMessage());
         }
@@ -84,12 +88,12 @@ class CurrencyRepository implements CurrencyRepositoryInterface
     public function delete(int $id): void
     {
         try {
-            $provider = $this->model::where('id', $id)->first();
-            if (!$provider) {
-                throw new ModelNotFoundException('Provider not found');
+            $currency = $this->model::where('id', $id)->first();
+            if (!$currency) {
+                throw new ModelNotFoundException('Currency not found');
             }
 
-            $provider->delete();
+            $currency->delete();
         } 
         catch (\Exception $ex) {
             throw new $ex($ex->getMessage());

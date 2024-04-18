@@ -1473,6 +1473,7 @@
                 ]
             }
         },
+
         "/api/payment-providers": {
             "get": {
                 "tags": [
@@ -1801,6 +1802,282 @@
                     }
                 ]
             }
+        },
+
+        "/api/currencies": {
+            "get": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Get list of currencies",
+                "description": "Returns all currencies.",
+                "operationId": "6a0efac0498f13348aca217f0fa7ca97",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Currency"
+                                            }
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Currencies fetched successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Create a new currency",
+                "operationId": "5cda4e336f79977859a7307859307243",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of the currency",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "symbol",
+                        "in": "query",
+                        "description": "Symbol of the currency",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Currency Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Currency"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currency not found"
+                    },
+                    "422": {
+                        "description": "Please send valid data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/currencies/{id}": {
+            "get": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Get a single currency by id",
+                "description": "Returns a single currency by id.",
+                "operationId": "defb879fb74b022959f62597196d2fe4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Currency"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currency not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Update an existing currency",
+                "description": "Updates the currency identified by the given id.",
+                "operationId": "70b6323c635c52c6d72439c6422b588b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the currency to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Data for updating the payment currency",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Currency"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Currency updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Currency"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currency not found"
+                    },
+                    "422": {
+                        "description": "Validate your inputs"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Delete a currency",
+                "description": "Deletes a currency identified by id.",
+                "operationId": "a5129ffe6992a39084667d558d2ca676",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the currency to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Currency deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Currency deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currency not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Provider not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred while deleting the currency"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1926,6 +2203,29 @@
                 "type": "object",
                 "xml": {
                     "name": "PaymentProvider"
+                }
+            }
+            ,
+            "Currency": {
+                "title": "Currency",
+                "description": "Currency model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "usd"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "$"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Currency"
                 }
             }
         },

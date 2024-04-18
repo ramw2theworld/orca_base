@@ -16,8 +16,8 @@ class CurrencyResource extends JsonResource
     { 
         return [
             'id' => $this->id,
-            'code' => $this->name,
-            'symbole' => $this->symbole,
+            'code' => $this->code,
+            'symbol' => $this->symbol,
             'created_at' => \Carbon\Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
         ];
     }
