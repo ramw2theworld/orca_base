@@ -10,6 +10,7 @@ use Modules\User\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Modules\PaymentProvider\Database\Seeders\CurrencySeeder;
+use Modules\PaymentProvider\Database\Seeders\LanguageSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -57,7 +58,8 @@ class DatabaseSeeder extends Seeder
 
         //currency table seeder
         $this->call([
-            CurrencySeeder::class,
+            // CurrencySeeder::class,
+            LanguageSeeder::class,
             // LanguageSeeder::class,
             // UsersSeeder::class,
             // PaymentProvidersTableSeeder::class,

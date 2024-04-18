@@ -9,6 +9,13 @@ use Modules\PaymentProvider\Models\Currency;
 class Language extends Model {
     use HasFactory;
     protected $table = 'languages';
+
+    protected $fillable = [
+        'code',
+        'name',
+        'is_active',
+        'currency_id',
+    ];
     
     protected $guarded = [];
 

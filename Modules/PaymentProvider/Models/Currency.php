@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class Currency extends Model
 {
     use HasFactory, Notifiable;
-    protected $table="currencies";
+    protected $table = "currencies";
 
     /**
      * The attributes that are mass assignable.
