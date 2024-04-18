@@ -6,8 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Modules\PaymentProvider\Repositories\Contracts\CurrencyRepositoryInterface;
 use Modules\PaymentProvider\Repositories\Contracts\PaymentProviderRepositoryInterface;
+use Modules\PaymentProvider\Repositories\Contracts\PlanRepositoryInterface;
 use Modules\PaymentProvider\Repositories\Eloquent\CurrencyRepository;
 use Modules\PaymentProvider\Repositories\Eloquent\PaymentProviderRepository;
+use Modules\PaymentProvider\Repositories\Eloquent\PlanRepository;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,7 @@ class PaymentServiceProvider extends ServiceProvider
     {
         $this->app->bind(PaymentProviderRepositoryInterface::class, PaymentProviderRepository::class);
         $this->app->bind(CurrencyRepositoryInterface::class, CurrencyRepository::class);
+        $this->app->bind(PlanRepositoryInterface::class, PlanRepository::class);
+
     }
 }

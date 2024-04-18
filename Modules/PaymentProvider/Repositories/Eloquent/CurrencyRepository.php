@@ -36,7 +36,7 @@ class CurrencyRepository implements CurrencyRepositoryInterface
     {
         try{
             $currency = $this->model->whereId($id)->first();
-            if (!$currency) {
+            if(!$currency){
                 throw new ModelNotFoundException('Currency not found');
             }
             return $currency;

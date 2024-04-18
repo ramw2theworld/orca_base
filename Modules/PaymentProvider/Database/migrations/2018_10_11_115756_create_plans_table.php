@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->enum('plan_code', ['basic', 'premium', 'enterprise'])->unique();
-            $table->decimal('amount', 10, 2);
-            $table->string('provider_plan_id');
+            $table->string('plan_code')->unique();
+            $table->integer('amount_trial')->nullable();
+            $table->integer('amount_premium')->nullable();
+            $table->string('provider_plan_id')->nullable();
+            $table->foreignId('payment_provider_id');
             $table->foreignId('currency_id');
             $table->timestamps();
         });

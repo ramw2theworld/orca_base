@@ -18,8 +18,8 @@ class PaymentProvider extends Model
      */
     protected $fillable = [
         'name', 
+        'provider_code',
         'is_active',
-
     ];
 
     /**
@@ -39,4 +39,8 @@ class PaymentProvider extends Model
     protected $casts = [
         // Define your casts here
     ];
+
+    public function plans(){
+        return $this->hasMany(Plan::class, 'payment_provider_id');
+    }
 }

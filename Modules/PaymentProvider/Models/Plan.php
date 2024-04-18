@@ -19,8 +19,10 @@ class Plan extends Model
     protected $fillable = [
         'name',
         'plan_code',
-        'amount',
+        'amount_trial',
+        'amount_premium',
         'provider_plan_id',
+        'payment_provider_id',
         'currency_id',
     ];
 
@@ -41,4 +43,8 @@ class Plan extends Model
     protected $casts = [
         // Define your casts here
     ];
+
+    public function paymentProvider(){
+        return $this->belongsTo(PaymentProvider::class);
+    }
 }
