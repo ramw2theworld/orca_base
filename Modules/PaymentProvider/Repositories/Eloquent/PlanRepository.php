@@ -19,13 +19,13 @@ class PlanRepository implements PlanRepositoryInterface
 
     public function all(): Collection
     {
-        return $this->model->with('paymentProvider')->orderBy('id', 'desc')->get();
+        return $this->model->with(['paymentProvider', 'currency'])->orderBy('id', 'desc')->get();
     }
 
     public function find($id): Plan
     {
         try{
-            $plan = $this->model->with('paymentProvider')->whereId($id)->first();
+            $plan = $this->model->with(['paymentProvider', 'currency'])->whereId($id)->first();
             if (!$plan) {
                 throw new ModelNotFoundException('Plan not found');
             }
@@ -64,7 +64,7 @@ class PlanRepository implements PlanRepositoryInterface
     public function update(array $data, int $id): Plan
     {
         try {
-            $plan = $this->model::where('id', $id)->with('paymentProvider')->first();
+            $plan = $this->model::where('id', $id)->with(['paymentProvider', 'currency'])->first();
             if (!$plan) {
                 throw new ModelNotFoundException('Plan not found');
             }

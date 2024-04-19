@@ -24,6 +24,7 @@ class PlanResource extends JsonResource
             'provider_plan_id' => $this->provider_plan_id,
             'created_at' => \Carbon\Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'paymentProvider' => new PaymentProviderResource($this->whenLoaded('paymentProvider')),
+            'currency' => new CurrencyResource($this->whenLoaded('currency')),
 
         ];
     }

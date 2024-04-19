@@ -3,7 +3,6 @@
 namespace Modules\CarCheck\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Modules\CarCheck\Repositories\Contracts\CarCheckRepositoryInterface;
 
 class CheckCarRegistrationController extends Controller

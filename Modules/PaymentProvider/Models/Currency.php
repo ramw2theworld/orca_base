@@ -38,4 +38,8 @@ class Currency extends Model
     protected $casts = [
         // Define your casts here
     ];
+
+    public function plans(){
+        return $this->hasMany(Plan::class);
+    }
 }
