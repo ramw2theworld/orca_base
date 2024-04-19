@@ -5,6 +5,7 @@ namespace Modules\PaymentProvider\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -112,7 +113,7 @@ class PlanController extends Controller
         try {
             $data = $request->validate([
                 'name' => 'required|unique:plans,name',
-                'plan_code' => 'required|unique:plans,name',
+                'plan_code' => 'required|unique:plans,plan_code',
                 'amount_trial' => 'required|integer',
                 'amount_premium' => 'required|integer',
                 'provider_plan_id' => 'required|string|min:10',
@@ -207,8 +208,8 @@ class PlanController extends Controller
     {
         try {
             $data = $request->validate([
-                'name' => 'sometimes|unique:plans,name',
-                'plan_code' => 'sometimes|unique:plans,name',
+                'name' => 'sometimes|required|unique:plans,name,' . $id,
+                'plan_code' => 'sometimes|required|unique:plans,plan_code,' . $id,
                 'amount_trial' => 'sometimes|integer',
                 'amount_premium' => 'sometimes|integer',
                 'provider_plan_id' => 'sometimes|string|min:10',
@@ -222,7 +223,13 @@ class PlanController extends Controller
         } catch(ModelNotFoundException $ex){
             Log::info('Plan not found: '. $ex->getMessage());
             return $this->sendError($ex->getMessage(), [], Response::HTTP_NOT_FOUND);
-        }  
+        } catch (QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1062) {
+                return $this->sendError('Duplicate entry', ['error' => 'A plan with similar unique attribute already exists.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            return $this->sendError($e->getMessage(), [], Response::HTTP_BAD_REQUEST);
+        }
         catch (Exception $ex) {
             Log::info('Received data: ', $request->all());
             return $this->sendError($ex->getMessage(), [], Response::HTTP_BAD_REQUEST);

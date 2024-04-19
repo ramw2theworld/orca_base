@@ -11,10 +11,10 @@ class PaymentProviderSeeder extends Seeder
     public function run()
     {
         $providers = [
-            ['name' => 'Stripe', 'provider_code' => 'stripe', 'is_active' => 1],
-            ['name' => 'PayPal', 'provider_code' => 'paypal', 'is_active' => 1],
-            ['name' => 'HiPay', 'provider_code' => 'hipay', 'is_active' => 1],
-            ['name' => 'Braintree', 'provider_code' => 'braintree', 'is_active' => 1],
+            ['name' => 'Stripe', 'provider_code' => 'stripe', 'is_active' => false],
+            ['name' => 'PayPal', 'provider_code' => 'paypal', 'is_active' => false],
+            ['name' => 'HiPay', 'provider_code' => 'hipay', 'is_active' => false],
+            ['name' => 'Braintree', 'provider_code' => 'braintree', 'is_active' => false],
         ];
 
         DB::table('payment_providers')->insert($providers);

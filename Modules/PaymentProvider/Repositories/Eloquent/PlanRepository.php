@@ -68,9 +68,14 @@ class PlanRepository implements PlanRepositoryInterface
             if (!$plan) {
                 throw new ModelNotFoundException('Plan not found');
             }
+            if($data['plan_code']){
+                $plan_code = Str::lower($data['plan_code']);
+            }else{
+                $plan_code = $plan->plan_code;
+            }
 
             $plan->name = $data['name']??$plan->name;
-            $plan->plan_code = $data['plan_code']??Str::lower($data['plan_code'], '-');
+            $plan->plan_code = $plan_code;
             $plan->amount_trial = $data['amount_trial']??$plan->amount_trial;
             $plan->amount_premium = $data['amount_premium']??$plan->amount_premium;
             $plan->provider_plan_id = $data['provider_plan_id']??$plan->provider_plan_id;
