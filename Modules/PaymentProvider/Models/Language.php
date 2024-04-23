@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Base;
+namespace Modules\PaymentProvider\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,11 +20,11 @@ class Language extends Model {
     protected $guarded = [];
 
     public function currency() {
-        return $this->belongsTo(Currency::class, 'currency_id', 'id');
+        return $this->belongsTo(Currency::class);
     }
 
     public static function langCurrency() {
-        return optional(Language::where('code', app()->getLocale())->first())->currency;
+        return optional(Language::where('code', 'en-gb')->first())->currency;
     }
 
 }

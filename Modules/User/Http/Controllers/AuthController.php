@@ -83,6 +83,7 @@ class AuthController extends Controller
         $user = Auth::user();
         $roles = $user->roles->pluck('name');
         $permissions = $user->getAllPermissions()->pluck('name');
+        $refreshToken = auth('api')->refresh();
 
         return $this->sendSuccess(
             [
@@ -94,6 +95,7 @@ class AuthController extends Controller
                     'roles' => $roles,
                     'permissions' => $permissions,
                 ],
+                'refresh_token'=> $refreshToken,
             ], 'Access token generated successfully', 200);
     }
 

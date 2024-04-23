@@ -2398,6 +2398,50 @@
                     }
                 ]
             }
+        },
+        "/api/check-active-provider": {
+            "get": {
+                "tags": ["Check Active Provider"],
+                "summary": "Get information about Active Payment Provider",
+                "description": "Get information about Active Payment Provider.",
+                "operationId": "getActivePaymentProvider",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                
+                                                "model": {
+                                                    "type": "string",
+                                                    "example": "Stripe"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Active Payment Provider not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {

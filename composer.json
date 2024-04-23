@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "spatie/laravel-permission": "^6.4",
+        "stripe/stripe-php": "^14.3",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
@@ -30,7 +31,10 @@
             "Modules\\": "Modules/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/CheckSubscription.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

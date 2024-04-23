@@ -4,7 +4,6 @@ namespace Modules\CarCheck\Repositories\Eloquent;
 
 use Modules\CarCheck\Repositories\Contracts\CarCheckRepositoryInterface;
 use Modules\CarCheck\Services\FetchDataFromAPI;
-use App\Helpers\JwtAuthHelper;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CarCheckRepository implements CarCheckRepositoryInterface
@@ -19,19 +18,47 @@ class CarCheckRepository implements CarCheckRepositoryInterface
         // $user = JwtAuthHelper::authenticateUser();
         $user = JWTAuth::user();
 
+        // GX16MKN
+        // Stolen
+        //  XAR888J
+        //  SA15GLZ
+        //  F550MAR
+        //  F355CHA
+        //  F812SFA
+
+        // Finance:
+        // V1AFA
+        // MF12NKA
+        // AC03ELL
+        // AM05LLL
+        // AU15WLU
+
+        // Write-off
+        // R55PAP
+        // AD59OER
+        // YK04RFA
+        // WA66SUH
+        // EJ59YOA
+
         $apis = [
             'paid' => [
-                // 'BatteryData',
-                // 'FuelPriceData',
-                // 'MotHistoryAndTaxStatusData',
-                // 'PostcodeLookup',
-                // 'SpecAndOptionsData',
-                // 'TyreData',
-                // 'ValuationCanPrice',
-                // 'ValuationData',
+                'BatteryData',
+                'FuelPriceData',
+                'MotHistoryAndTaxStatusData',
+                'PostcodeLookup',
+                'SpecAndOptionsData',
+                'TyreData',
+                'ValuationCanPrice',
+                'ValuationData',
                 'VdiCheckFull',
-                // 'VehicleAndMotHistory',
-                // 'VehicleTaxData',
+                'VehicleAndMotHistory',
+                'VehicleTaxData',
+                //unpaid
+                'MotHistoryData',
+                'VehicleData',
+                'VehicleDataIRL',
+                'VehicleImageData',
+
             ],
             'unpaid' => [
                 'MotHistoryData',
@@ -46,14 +73,13 @@ class CarCheckRepository implements CarCheckRepositoryInterface
                 $infos = $this->fetchDataFetchAPI->init($apis['paid'], $reg_number);
             }
             else{
-                $infos = $this->fetchDataFetchAPI->init($apis['unpaid'], $reg_number);
+                $infos = $this->fetchDataFetchAPI->init($apis['paid'], $reg_number);
             }
 
             return $infos;
         }
         else{
-            return $this->fetchDataFetchAPI->init($apis['unpaid'], $reg_number);
-
+            return $this->fetchDataFetchAPI->init($apis['paid'], $reg_number);
         }
     }
 }
