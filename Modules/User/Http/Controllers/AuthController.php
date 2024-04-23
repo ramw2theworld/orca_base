@@ -4,10 +4,12 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Http\Client\Response as ClientResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -52,13 +54,13 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return $this->sendError("Credentials do not match", $validator->errors(), Response::HTTP_BAD_REQUEST);
             }
 
             $credentials = $request->only('email', 'password');
 
             if (!Auth::attempt($credentials)) {
-                return response()->json(['message' => 'Invalid credentials'], 401);
+                return $this->sendError("Invalid credentials", [], Response::HTTP_UNAUTHORIZED);
             }
 
             $token = JWTAuth::attempt($credentials);
@@ -77,13 +79,14 @@ class AuthController extends Controller
 
     }
 
-    protected function respondWithToken($token): JsonResponse
+    protected function respondWithToken(string $token): JsonResponse
     {
         $token_ttl = auth('api')->factory()->getTTL();
         $user = Auth::user();
         $roles = $user->roles->pluck('name');
         $permissions = $user->getAllPermissions()->pluck('name');
         $refreshToken = auth('api')->refresh();
+        $cookie = cookie('jwt', $token, 60*24);
 
         return $this->sendSuccess(
             [
@@ -95,8 +98,9 @@ class AuthController extends Controller
                     'roles' => $roles,
                     'permissions' => $permissions,
                 ],
-                'refresh_token'=> $refreshToken,
-            ], 'Access token generated successfully', 200);
+                'refresh_token'=> $refreshToken
+            ], 
+            'Access token generated successfully', 200)->withCookie($cookie);
     }
 
     /**
@@ -125,14 +129,22 @@ class AuthController extends Controller
      */
     protected function logout(Request $request): JsonResponse
     {
-        try{
-            JWTAuth::invalidate(JWTAuth::getToken());
-            return $this->sendSuccess([], 'Logout successfully', 200);
-        }
-        catch(Exception $exception){
-            return $this->sendError('User login failed',
-            ['error' => 'An error occurred while generating login: '.$exception->getMessage()],
-            Response::HTTP_INTERNAL_SERVER_ERROR);
+        try {
+            $token = JWTAuth::getToken();
+            if (!$token && $request->hasCookie('jwt')) {
+                $token = $request->cookie('jwt');
+                JWTAuth::setToken($token);
+            }
+    
+            if (!$token) {
+                throw new Exception('No token provided');
+            }
+    
+            JWTAuth::invalidate($token);
+            $cookie = Cookie::forget('jwt');
+            return $this->sendSuccess([], 'Logout successfully', Response::HTTP_OK)->withCookie($cookie);
+        } catch (Exception $exception) {
+            return $this->sendError('Logout failed', ['error' => $exception->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

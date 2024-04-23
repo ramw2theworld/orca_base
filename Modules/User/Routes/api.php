@@ -10,7 +10,7 @@ Route::prefix('/users')
 
     Route::post('/', 'create')->withoutMiddleware(['jwt.auth']);
 
-    Route::middleware(['jwt.auth'])
+    Route::middleware(['jwt.auth', 'auth'])
         ->group(function () {
             Route::get('/', 'index')->name('users.index')
                 ->middleware(['role_or_permission:admin|fetch roles']);
@@ -32,9 +32,9 @@ Route::prefix('/users')
 
  Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login')
-        ->withoutMiddleware(['jwt.auth']);
+        ->withoutMiddleware(['jwt.auth', 'auth']);
     
-    Route::post('/logout', 'logout')->name('logout')->middleware(['jwt.auth']);
+    Route::post('/logout', 'logout')->name('logout')->middleware(['jwt.auth', 'auth']);
 });
 
 

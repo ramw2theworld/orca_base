@@ -21,7 +21,16 @@ class JwtTokenMiddleware
     public function handle(Request $request, Closure $next)
     {
         try {
-            $user = JWTAuth::parseToken()->authenticate();
+            $token = JWTAuth::getToken();
+            if (!$token && $request->hasCookie('jwt')) {
+                $token = $request->cookie('jwt');
+                JWTAuth::setToken($token); 
+                $user = JWTAuth::authenticate($token);
+            } 
+            else {
+                $user = JWTAuth::parseToken()->authenticate();
+            }
+
             if (!$user) {
                 throw new AuthorizationException('User not found');
             }
@@ -32,17 +41,15 @@ class JwtTokenMiddleware
 
 
             $message = 'Unauthorized';
-
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
                 $message = 'Token expired';
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
                 $message = 'Token is invalid';
             }
-
             throw new AuthorizationException($message);
         }
 
-        $this->authorize($request, $user);
+        // $this->authorize($request, $user);
 
         return $next($request);
     }
