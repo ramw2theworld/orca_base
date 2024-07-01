@@ -18,6 +18,7 @@ Route::prefix('payment')->group(function(){
 
     Route::post('/process', [PaymentController::class, 'createSubscription'])
         ->name('payment.process')->withoutMiddleware(['jwt.auth']);
+    
 });
 
 // Route::group(['prefix'=> 'payment'], function (){

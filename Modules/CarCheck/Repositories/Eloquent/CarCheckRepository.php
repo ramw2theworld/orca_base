@@ -61,25 +61,25 @@ class CarCheckRepository implements CarCheckRepositoryInterface
 
             ],
             'unpaid' => [
+                'VehicleImageData',
                 'MotHistoryData',
                 'VehicleData',
-                'VehicleDataIRL',
-                'VehicleImageData',
+                // 'VehicleDataIRL',
             ]
         ];
         //check log in
         if($user){
             if($user->hasSubscription()){
-                $infos = $this->fetchDataFetchAPI->init($apis['paid'], $reg_number);
+                $infos = $this->fetchDataFetchAPI->init($apis['unpaid'], $reg_number);
             }
             else{
-                $infos = $this->fetchDataFetchAPI->init($apis['paid'], $reg_number);
+                $infos = $this->fetchDataFetchAPI->init($apis['unpaid'], $reg_number);
             }
 
             return $infos;
         }
         else{
-            return $this->fetchDataFetchAPI->init($apis['paid'], $reg_number);
+            return $this->fetchDataFetchAPI->init($apis['unpaid'], $reg_number);
         }
     }
 }

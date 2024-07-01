@@ -10,7 +10,6 @@ use Modules\PaymentProvider\Repositories\Contracts\PaymentProviderRepositoryInte
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Modules\PaymentProvider\Models\PaymentProvider;
 
 /**
  * @OA\SecurityScheme(

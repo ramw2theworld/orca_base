@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Client\Response as ClientResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\PaymentProvider\Repositories\Contracts\PaymentRepositoryInterface;
 
@@ -74,13 +75,19 @@ class PaymentController extends Controller
     }
 
     public function createSubscription(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
         $validatedRequest = $request->all();
         $validatedRequest['request_user'] = $request->user();
+        $validatedRequest['email'] = $request->email;
+        return dd(Auth::user());
         return $validatedRequest;
-
         try{
+            dd(3424323);
             $response = $this->paymentRepository->createSubscription($validatedRequest);
-
+            return $response;
             $data = [
                 'hasSubscription' => subscriptionStatus(),
                 'subscription'=> $response['subscription'],
@@ -94,7 +101,7 @@ class PaymentController extends Controller
             return $this->sendSuccess($data, 'Subscription created successfully', Response::HTTP_CREATED);
         }
         catch (\Exception $exception){
-            Log::error("Error while creating subscription: ". $exception->getMessage());
+            Log::error("Error while creating subscription: ". $exception->getMessage().' and Line: '.$exception->getLine());
             return $this->sendError("Something went wrong: ". $exception->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

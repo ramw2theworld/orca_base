@@ -95,6 +95,7 @@ class AuthController extends Controller
                 'expires_in' => $token_ttl * 60,
                 'user' => [
                     'email' => $user->email,
+                    'name' => $user->first_name.' '.$user->last_name,
                     'roles' => $roles,
                     'permissions' => $permissions,
                 ],

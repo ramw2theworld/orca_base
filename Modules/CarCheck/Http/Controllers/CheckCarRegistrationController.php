@@ -3,7 +3,11 @@
 namespace Modules\CarCheck\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Modules\CarCheck\Repositories\Contracts\CarCheckRepositoryInterface;
+use Illuminate\Support\Facades\Validator;
 
 class CheckCarRegistrationController extends Controller
 {
@@ -47,7 +51,20 @@ class CheckCarRegistrationController extends Controller
      *   security={{"bearerAuth":{}}}
      * )
      */
-    public function checkRegNumber(string $car_reg_number=null){
-        return $this->carCheckRepository->checkCarRegNumber($car_reg_number);
+    public function checkRegNumber(string $car_reg_number){
+        try{
+            $validator = Validator::make(['car_reg_number' => $car_reg_number], [
+                'car_reg_number' => 'required|string|max:10|regex:/^[A-Z0-9]+$/i',
+            ]);
+        
+            if ($validator->fails()) {
+                return $this->sendError('Please put valid car registration number', $validator->errors(), 422);
+            }
+            
+            $data = $this->carCheckRepository->checkCarRegNumber($car_reg_number);
+            return $this->sendSuccess($data, 'Car details fetched successfully', Response::HTTP_OK);
+        }catch(Exception $exception){
+            $this->sendError('Something went wrong while fetching card details: '.$exception->getMessage(), [], 500);
+        }
     }
 }

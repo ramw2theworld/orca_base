@@ -28,12 +28,10 @@ class PaymentServiceProvider extends ServiceProvider
             __DIR__.'/../Config/PaymentProvider.php' => config_path('paymentprovider.php'),
         ], 'config');
 
-        $stripePublicKey = config('paymentprovider.stripe.public_key');
-        $stripeSecretKey = config('paymentprovider.stripe.secret_key');
-
-        // Log or use the keys as required
-        Log::info("Stripe Public Key: $stripePublicKey");
-        Log::info("Stripe Secret Key: $stripeSecretKey");
+        // $stripePublicKey = config('paymentprovider.payment.stripe.public_key');
+        // // Log or use the keys as required
+        
+        // Log::info("Stripe Public Key: $stripePublicKey");
     }
 
     public function register()

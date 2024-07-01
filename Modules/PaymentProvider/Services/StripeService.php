@@ -68,6 +68,7 @@ class StripeService {
 
     public function createSubscription($data)
     {
+        return $data;
         try {
             Stripe::setApiKey($this->stripeSecret);
 
@@ -75,7 +76,8 @@ class StripeService {
             $stripeCustomerId = $data['customer_id'];
 
             $authUser = $data['request_user'];
-
+            dd($data); 
+            // TJ081368A
             $stripePaymentMethod = PaymentMethod::retrieve($stripePaymentMethodId);
             $stripePaymentMethod->attach(['customer' => $stripeCustomerId]);
 

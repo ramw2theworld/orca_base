@@ -41,7 +41,7 @@ trait RespondsWithJson
             $response = response()->json([
                 'success' => true,
                 'message' => $message,
-                'data' => $data
+                'payload' => $data
             ], $code);
 
             // Add headers if provided
